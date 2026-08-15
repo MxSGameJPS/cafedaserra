@@ -174,8 +174,6 @@ function createCup() {
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     if (i < rimEnd) {
-      // Wide, shallow elliptical lip. Keeping the center open makes the cup
-      // read instantly and gives the PNG smoke a clean visual anchor.
       const a = randomFor(i, 51) * TAU;
       const ring = 0.78 + randomFor(i, 52) * 0.22;
       const x = Math.cos(a) * 1.52 * ring - 0.18;
@@ -183,7 +181,6 @@ function createCup() {
       const z = (randomFor(i, 53) - 0.5) * 0.26;
       setPoint(target, i, x, y, z);
     } else if (i < bodyEnd) {
-      // Rounded café cup: wider at the mouth, gently narrowing toward a soft base.
       const t = randomFor(i, 54);
       const y = 0.16 - t * 1.42;
       const topWidth = 1.40;
@@ -195,7 +192,6 @@ function createCup() {
       const z = (randomFor(i, 56) - 0.5) * (0.46 - t * 0.08);
       setPoint(target, i, x, y + bottomRound, z);
     } else if (i < handleEnd) {
-      // Smaller, cleaner handle with a true hollow center.
       const a = randomFor(i, 57) * TAU;
       const inner = 0.46;
       const outer = 0.70;
@@ -204,7 +200,6 @@ function createCup() {
       const y = -0.36 + Math.sin(a) * radius * 0.78;
       setPoint(target, i, x, y, (randomFor(i, 59) - 0.5) * 0.22);
     } else {
-      // Thin saucer, slightly wider than the cup and visually separated from it.
       const a = randomFor(i, 60) * TAU;
       const ring = 0.62 + randomFor(i, 61) * 0.38;
       const x = Math.cos(a) * 1.88 * ring - 0.14;
@@ -263,7 +258,7 @@ function AmbientDust() {
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.018}
+        size={0.021}
         sizeAttenuation
         transparent
         opacity={0.42}
@@ -335,7 +330,7 @@ function ParticleField({ progressRef }: ParticleFieldProps) {
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.028}
+        size={0.034}
         sizeAttenuation
         transparent
         opacity={0.93}
