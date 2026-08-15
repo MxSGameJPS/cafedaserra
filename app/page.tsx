@@ -27,6 +27,9 @@ export default function HomePage() {
 
   const smokeProgress = Math.min(1, Math.max(0, (progress - 0.82) / 0.14));
   const beanDrift = Math.sin(progress * Math.PI * 1.4);
+  const experiencePresence = Math.max(0, 1 - Math.abs(progress - 0.75) / 0.14);
+  const nearBeanOpacity = (0.27 + progress * 0.035) * (1 - experiencePresence * 0.62);
+  const farBeanOpacity = (0.12 + progress * 0.025) * (1 - experiencePresence * 0.72);
 
   return (
     <main className="site-shell">
@@ -36,7 +39,7 @@ export default function HomePage() {
         className="coffee-beans-layer coffee-beans-layer--near"
         aria-hidden="true"
         style={{
-          opacity: 0.27 + progress * 0.035,
+          opacity: nearBeanOpacity,
           transform: `translate3d(${beanDrift * -9}px, ${progress * -18}px, 0) scale(1.02)`,
         }}
       />
@@ -44,7 +47,7 @@ export default function HomePage() {
         className="coffee-beans-layer coffee-beans-layer--far"
         aria-hidden="true"
         style={{
-          opacity: 0.12 + progress * 0.025,
+          opacity: farBeanOpacity,
           transform: `translate3d(${beanDrift * 12}px, ${progress * 12}px, 0) rotate(10deg) scale(1.08)`,
         }}
       />
@@ -124,18 +127,18 @@ export default function HomePage() {
           background-repeat: no-repeat;
           background-size: cover;
           background-position: center;
-          opacity: .66;
-          filter: brightness(.48) sepia(.38) saturate(.78) contrast(1.14);
-          -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 35%, rgba(0,0,0,.92) 54%, rgba(0,0,0,.34) 76%, transparent 96%);
-          mask-image: radial-gradient(ellipse at 50% 50%, #000 35%, rgba(0,0,0,.92) 54%, rgba(0,0,0,.34) 76%, transparent 96%);
+          opacity: .72;
+          filter: brightness(.50) sepia(.34) saturate(.78) contrast(1.14);
+          -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 38%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.40) 79%, transparent 97%);
+          mask-image: radial-gradient(ellipse at 50% 50%, #000 38%, rgba(0,0,0,.94) 58%, rgba(0,0,0,.40) 79%, transparent 97%);
           z-index: -2;
         }
 
         .scene-photo::after {
           inset: 0 -6% 0 -10%;
           background:
-            linear-gradient(90deg, rgba(5,3,2,.76) 0%, rgba(5,3,2,.10) 28%, rgba(5,3,2,.08) 67%, rgba(5,3,2,.72) 100%),
-            radial-gradient(circle at 58% 46%, rgba(190,102,42,.16), transparent 52%);
+            linear-gradient(90deg, rgba(5,3,2,.66) 0%, rgba(5,3,2,.08) 26%, rgba(5,3,2,.08) 67%, rgba(5,3,2,.74) 100%),
+            radial-gradient(circle at 58% 46%, rgba(190,102,42,.14), transparent 52%);
           z-index: -1;
         }
 
@@ -194,6 +197,74 @@ export default function HomePage() {
           .site-shell .final-lockup {
             width: min(570px, 100%);
           }
+
+          /* Experiência: foto sólida à esquerda, corredor central para o motion
+             e copy limpa à direita, como na referência aprovada. */
+          .experience-scene .scene-inner {
+            width: min(1460px, 92vw);
+            grid-template-columns: minmax(0, 1.20fr) minmax(110px, .23fr) minmax(360px, .57fr);
+            gap: 0;
+          }
+
+          .experience-scene .scene-photo {
+            grid-column: 1;
+            grid-row: 1;
+            min-height: min(67vh, 640px);
+          }
+
+          .experience-scene .experience-transition {
+            grid-column: 2;
+            grid-row: 1;
+            min-height: min(67vh, 640px);
+            position: relative;
+          }
+
+          .experience-scene .scene-copy {
+            grid-column: 3 !important;
+            grid-row: 1;
+            width: min(390px, 100%);
+            justify-self: start;
+            padding-left: clamp(28px, 3vw, 52px);
+            position: relative;
+            z-index: 5;
+          }
+
+          .experience-scene .scene-copy::before {
+            content: "";
+            position: absolute;
+            z-index: -1;
+            inset: -34% -28% -34% -90px;
+            background: linear-gradient(90deg, transparent 0%, rgba(5,3,2,.76) 24%, rgba(5,3,2,.96) 55%, #050302 82%);
+            pointer-events: none;
+          }
+
+          .experience-scene .scene-photo--interior::before {
+            inset: 0 -12% 0 -15%;
+            opacity: .96;
+            filter: brightness(.50) sepia(.30) saturate(.82) contrast(1.16);
+            -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 65%, rgba(0,0,0,.94) 77%, rgba(0,0,0,.38) 91%, transparent 100%);
+            mask-image: linear-gradient(90deg, #000 0%, #000 65%, rgba(0,0,0,.94) 77%, rgba(0,0,0,.38) 91%, transparent 100%);
+          }
+
+          .experience-scene .scene-photo--interior::after {
+            inset: 0 -12% 0 -15%;
+            background:
+              linear-gradient(90deg, rgba(5,3,2,.20) 0%, rgba(5,3,2,.02) 52%, rgba(5,3,2,.18) 72%, rgba(5,3,2,.94) 100%),
+              radial-gradient(circle at 54% 45%, rgba(184,107,50,.11), transparent 55%);
+          }
+
+          .experience-scene .scene-title.small {
+            font-size: clamp(31px, 2.8vw, 44px);
+            line-height: 1;
+            letter-spacing: .015em;
+          }
+
+          .experience-scene .scene-body {
+            max-width: 350px;
+            margin-top: 18px;
+            font-size: clamp(14px, 1vw, 16px);
+            line-height: 1.55;
+          }
         }
 
         @media (max-width: 900px) {
@@ -221,13 +292,21 @@ export default function HomePage() {
             position: absolute;
             inset: 10vh 0 auto 0;
             min-height: 54vh;
-            opacity: .62;
+            opacity: .72;
           }
 
           .scene-photo::before {
             inset: 0 -14vw;
             -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 68%, transparent 100%);
             mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 68%, transparent 100%);
+          }
+
+          .experience-transition {
+            display: none;
+          }
+
+          .experience-scene .scene-photo--interior::before {
+            opacity: .80;
           }
         }
       `}</style>
@@ -306,20 +385,18 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="scene" id="experiencia">
+        <section className="scene experience-scene" id="experiencia">
           <div className="scene-inner">
+            <div className="scene-space scene-photo scene-photo--interior" aria-hidden="true" />
+            <div className="experience-transition" aria-hidden="true" />
             <div className="scene-copy">
               <div className="scene-kicker">03 · Experiência</div>
-              <h2 className="scene-title small">Para conversar. Para ficar.</h2>
+              <h2 className="scene-title small">Experiência</h2>
               <p className="scene-body">
-                Um ambiente que combina com diferentes momentos: uma tarde em família, uma conversa
-                tranquila, alguns minutos só para você ou uma reunião acompanhada de um bom café.
+                Um lugar para estar com quem você gosta, para trabalhar, conversar, ler um livro ou
+                simplesmente saborear um bom café.
               </p>
-              <div className="scene-meta">
-                <span>Família</span><span>Encontros</span><span>Reuniões</span><span>Pausa</span>
-              </div>
             </div>
-            <div className="scene-space scene-photo scene-photo--interior" aria-hidden="true" />
           </div>
         </section>
 
