@@ -106,6 +106,49 @@ export default function HomePage() {
           mask-image: linear-gradient(to top, #000 0%, #000 78%, transparent 100%);
         }
 
+        .scene-photo {
+          position: relative;
+          min-height: min(63vh, 610px);
+          isolation: isolate;
+        }
+
+        .scene-photo::before,
+        .scene-photo::after {
+          content: "";
+          position: absolute;
+          pointer-events: none;
+        }
+
+        .scene-photo::before {
+          inset: 2% -4% 2% -8%;
+          background-repeat: no-repeat;
+          background-size: cover;
+          background-position: center;
+          opacity: .66;
+          filter: brightness(.48) sepia(.38) saturate(.78) contrast(1.14);
+          -webkit-mask-image: radial-gradient(ellipse at 50% 50%, #000 35%, rgba(0,0,0,.92) 54%, rgba(0,0,0,.34) 76%, transparent 96%);
+          mask-image: radial-gradient(ellipse at 50% 50%, #000 35%, rgba(0,0,0,.92) 54%, rgba(0,0,0,.34) 76%, transparent 96%);
+          z-index: -2;
+        }
+
+        .scene-photo::after {
+          inset: 0 -6% 0 -10%;
+          background:
+            linear-gradient(90deg, rgba(5,3,2,.76) 0%, rgba(5,3,2,.10) 28%, rgba(5,3,2,.08) 67%, rgba(5,3,2,.72) 100%),
+            radial-gradient(circle at 58% 46%, rgba(190,102,42,.16), transparent 52%);
+          z-index: -1;
+        }
+
+        .scene-photo--shopping::before {
+          background-image: url('/shopping.png');
+          background-position: center 52%;
+        }
+
+        .scene-photo--interior::before {
+          background-image: url('/cafeteriaInterno.png');
+          background-position: center 52%;
+        }
+
         @media (min-width: 901px) {
           .site-shell .scene {
             padding-left: 6vw;
@@ -172,6 +215,20 @@ export default function HomePage() {
             background-size: 500% auto;
             background-position: center 47%;
           }
+
+          .scene-photo {
+            display: block !important;
+            position: absolute;
+            inset: 10vh 0 auto 0;
+            min-height: 54vh;
+            opacity: .62;
+          }
+
+          .scene-photo::before {
+            inset: 0 -14vw;
+            -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 68%, transparent 100%);
+            mask-image: linear-gradient(to bottom, transparent 0%, #000 18%, #000 68%, transparent 100%);
+          }
         }
       `}</style>
 
@@ -230,7 +287,7 @@ export default function HomePage() {
 
         <section className="scene" id="localizacao">
           <div className="scene-inner">
-            <div className="scene-space" />
+            <div className="scene-space scene-photo scene-photo--shopping" aria-hidden="true" />
             <div className="scene-copy">
               <div className="scene-kicker">02 · Onde estamos</div>
               <h2 className="scene-title small">No caminho. Perto de você.</h2>
@@ -262,7 +319,7 @@ export default function HomePage() {
                 <span>Família</span><span>Encontros</span><span>Reuniões</span><span>Pausa</span>
               </div>
             </div>
-            <div className="scene-space" />
+            <div className="scene-space scene-photo scene-photo--interior" aria-hidden="true" />
           </div>
         </section>
 
