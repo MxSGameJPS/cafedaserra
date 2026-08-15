@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import ReservationModal from "@/components/ReservationModal";
 
 const scenes = [
@@ -9,8 +9,8 @@ const scenes = [
     eyebrow: "Café da Serra",
     title: "Um momento. Um sabor. Uma pausa.",
     body: "Entre Dois Irmãos e Ivoti, um lugar para desacelerar, encontrar pessoas e saborear um bom café.",
-    start: 0.0,
-    holdStart: 0.025,
+    start: -0.02,
+    holdStart: 0,
     holdEnd: 0.135,
     end: 0.195,
     position: "right",
@@ -55,8 +55,8 @@ const scenes = [
     body: "Alguns caminhos merecem uma pausa. Escolha o seu momento.",
     start: 0.79,
     holdStart: 0.845,
-    holdEnd: 0.97,
-    end: 1,
+    holdEnd: 1,
+    end: 1.01,
     position: "center",
   },
 ] as const;
@@ -182,15 +182,17 @@ export default function HomePage() {
             scene.end,
           );
 
+          const style = {
+            opacity: presence,
+            "--copy-lift": `${(1 - presence) * 28}px`,
+            pointerEvents: presence > 0.82 ? "auto" : "none",
+          } as CSSProperties;
+
           return (
             <section
               key={scene.id}
               className={`video-copy video-copy--${scene.position}`}
-              style={{
-                opacity: presence,
-                transform: `translate3d(0, ${(1 - presence) * 28}px, 0)`,
-                pointerEvents: presence > 0.82 ? "auto" : "none",
-              }}
+              style={style}
               aria-hidden={presence < 0.2}
             >
               <div className="video-copy__index">{scene.id}</div>
