@@ -168,55 +168,49 @@ function createSteam() {
 
 function createCup() {
   const target = new Float32Array(PARTICLE_COUNT * 3);
-  const rimEnd = Math.floor(PARTICLE_COUNT * 0.15);
-  const bodyEnd = Math.floor(PARTICLE_COUNT * 0.61);
-  const handleEnd = Math.floor(PARTICLE_COUNT * 0.78);
-  const saucerEnd = Math.floor(PARTICLE_COUNT * 0.90);
+  const rimEnd = Math.floor(PARTICLE_COUNT * 0.20);
+  const bodyEnd = Math.floor(PARTICLE_COUNT * 0.72);
+  const handleEnd = Math.floor(PARTICLE_COUNT * 0.88);
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
     if (i < rimEnd) {
+      // Wide, shallow elliptical lip. Keeping the center open makes the cup
+      // read instantly and gives the PNG smoke a clean visual anchor.
       const a = randomFor(i, 51) * TAU;
       const ring = 0.78 + randomFor(i, 52) * 0.22;
-      setPoint(
-        target,
-        i,
-        Math.cos(a) * 1.46 * ring - 0.22,
-        0.42 + Math.sin(a) * 0.24 * ring,
-        (randomFor(i, 53) - 0.5) * 0.30,
-      );
+      const x = Math.cos(a) * 1.52 * ring - 0.18;
+      const y = 0.34 + Math.sin(a) * 0.25 * ring;
+      const z = (randomFor(i, 53) - 0.5) * 0.26;
+      setPoint(target, i, x, y, z);
     } else if (i < bodyEnd) {
+      // Rounded café cup: wider at the mouth, gently narrowing toward a soft base.
       const t = randomFor(i, 54);
-      const y = 0.28 - t * 1.55;
-      const halfWidth = 1.34 - t * 0.22;
+      const y = 0.16 - t * 1.42;
+      const topWidth = 1.40;
+      const bottomWidth = 0.98;
+      const halfWidth = THREE.MathUtils.lerp(topWidth, bottomWidth, Math.pow(t, 0.88));
       const xNorm = randomFor(i, 55) * 2 - 1;
-      const curvedBottom = Math.pow(Math.abs(xNorm), 3.1) * 0.16;
-      const x = xNorm * halfWidth - 0.22;
-      const z = (randomFor(i, 56) - 0.5) * (0.50 - t * 0.10);
-      setPoint(target, i, x, y + curvedBottom, z);
+      const x = xNorm * halfWidth - 0.18;
+      const bottomRound = Math.pow(Math.abs(xNorm), 2.8) * (0.05 + t * 0.18);
+      const z = (randomFor(i, 56) - 0.5) * (0.46 - t * 0.08);
+      setPoint(target, i, x, y + bottomRound, z);
     } else if (i < handleEnd) {
+      // Smaller, cleaner handle with a true hollow center.
       const a = randomFor(i, 57) * TAU;
-      const inner = 0.52;
-      const outer = 0.77;
+      const inner = 0.46;
+      const outer = 0.70;
       const radius = Math.sqrt(inner * inner + randomFor(i, 58) * (outer * outer - inner * inner));
-      const x = 1.10 + Math.cos(a) * radius;
-      const y = -0.35 + Math.sin(a) * radius * 0.82;
-      setPoint(target, i, x, y, (randomFor(i, 59) - 0.5) * 0.25);
-    } else if (i < saucerEnd) {
-      const a = randomFor(i, 60) * TAU;
-      const ring = 0.55 + randomFor(i, 61) * 0.45;
-      setPoint(
-        target,
-        i,
-        Math.cos(a) * 1.95 * ring - 0.18,
-        -1.52 + Math.sin(a) * 0.20 * ring,
-        (randomFor(i, 62) - 0.5) * 0.26,
-      );
+      const x = 1.14 + Math.cos(a) * radius;
+      const y = -0.36 + Math.sin(a) * radius * 0.78;
+      setPoint(target, i, x, y, (randomFor(i, 59) - 0.5) * 0.22);
     } else {
-      const strand = i % 2;
-      const t = randomFor(i, 63);
-      const x = (strand ? 0.26 : -0.34) + Math.sin(t * 7.8 + strand * 1.3) * 0.20;
-      const y = 0.55 + t * 2.12;
-      setPoint(target, i, x, y, Math.cos(t * 6.8 + strand) * 0.10);
+      // Thin saucer, slightly wider than the cup and visually separated from it.
+      const a = randomFor(i, 60) * TAU;
+      const ring = 0.62 + randomFor(i, 61) * 0.38;
+      const x = Math.cos(a) * 1.88 * ring - 0.14;
+      const y = -1.48 + Math.sin(a) * 0.15 * ring;
+      const z = (randomFor(i, 62) - 0.5) * 0.22;
+      setPoint(target, i, x, y, z);
     }
   }
 
@@ -328,7 +322,8 @@ function ParticleField({ progressRef }: ParticleFieldProps) {
 
     const isMobile = state.size.width <= 900;
     const targetX = isMobile ? -0.06 : -2.28;
-    const targetScale = isMobile ? 0.86 : 0.98;
+    const finalPresence = THREE.MathUtils.smoothstep(progressRef.current, 0.82, 1);
+    const targetScale = isMobile ? 0.86 : THREE.MathUtils.lerp(0.98, 1.04, finalPresence);
     points.position.x += (targetX - points.position.x) * 0.075;
     points.scale.setScalar(THREE.MathUtils.lerp(points.scale.x, targetScale, 0.075));
   });
