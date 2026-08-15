@@ -1,0 +1,37 @@
+/*
+ * Particle stacking contract:
+ * particles are the visual when no PNG exists, and atmosphere when a PNG does.
+ */
+.particle-canvas {
+  z-index: 1 !important;
+  opacity: 1 !important;
+}
+
+.particle-vignette {
+  z-index: 2 !important;
+}
+
+.story {
+  z-index: 3 !important;
+}
+
+html.closing-phase .particle-canvas {
+  opacity: 1 !important;
+}
+
+/* Photography must be a true foreground object, never a translucent surface
+   that lets the particle silhouette read through it. */
+.scene-media,
+.scene-media--shopping,
+.scene-media--interior {
+  opacity: 1 !important;
+  filter: brightness(.53) saturate(.72) sepia(.12) contrast(1.06) !important;
+}
+
+@media (max-width: 900px) {
+  .scene-media,
+  .scene-media--shopping,
+  .scene-media--interior {
+    opacity: .94 !important;
+  }
+}
