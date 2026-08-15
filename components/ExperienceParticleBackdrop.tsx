@@ -5,7 +5,6 @@ import { useEffect, useMemo, useRef, type MutableRefObject } from "react";
 import * as THREE from "three";
 
 const EXPERIENCE_PARTICLE_COUNT = 12000;
-const TAU = Math.PI * 2;
 
 type FieldProps = {
   presenceRef: MutableRefObject<number>;
@@ -148,12 +147,12 @@ export default function ExperienceParticleBackdrop() {
         .experience-particle-backdrop {
           position: fixed;
           inset: 0;
-          z-index: 3;
+          z-index: 1;
           pointer-events: none;
         }
 
         /* In act 04 the primary morph retreats and the expanded field becomes
-           the atmospheric layer. The content itself stays in front. */
+           the atmospheric layer. Photo and copy remain entirely in front. */
         html.experience-phase .particle-canvas {
           opacity: .08 !important;
         }
