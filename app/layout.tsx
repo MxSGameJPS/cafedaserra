@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./redesign.css";
 import "./particle-layer.css";
+import "./final-cleanup.css";
 
 export const metadata: Metadata = {
   title: "Café da Serra | Portal da Serra",
