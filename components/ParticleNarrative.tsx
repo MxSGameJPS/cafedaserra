@@ -177,9 +177,6 @@ function createDiffuseField() {
     const x = (randomFor(i, 31) * 2 - 1) * 5.9;
     const y = (randomFor(i, 32) * 2 - 1) * 3.55;
     const depth = randomFor(i, 33);
-
-    // Very soft density variation keeps the field organic without creating a
-    // silhouette or focal object.
     const drift = Math.sin(x * 0.72 + i * 0.013) * 0.16 + Math.cos(y * 1.08 + i * 0.007) * 0.10;
     const z = -0.45 - depth * 2.0 + drift;
 
@@ -340,9 +337,6 @@ function ParticleField({ progressRef }: ProgressProps) {
 export default function ParticleNarrative() {
   const progressRef = useRef(0);
   const closingRef = useRef<HTMLDivElement>(null);
-  const smokeRef = useRef<HTMLDivElement>(null);
-  const beansARef = useRef<HTMLDivElement>(null);
-  const beansBRef = useRef<HTMLDivElement>(null);
   const cupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -351,35 +345,16 @@ export default function ParticleNarrative() {
       const progress = THREE.MathUtils.clamp(window.scrollY / max, 0, 1);
       progressRef.current = progress;
 
-      // Real PNG assets appear only in the final act. Until then, photography
-      // is the only foreground visual and particles remain diffuse behind it.
-      const closing = THREE.MathUtils.smoothstep(progress, 0.82, 0.91);
-      const cupReveal = THREE.MathUtils.smoothstep(progress, 0.88, 0.98);
-      const steamLift = THREE.MathUtils.lerp(44, -8, closing);
-      const beanDrift = THREE.MathUtils.lerp(32, -26, closing);
+      const closing = THREE.MathUtils.smoothstep(progress, 0.84, 0.94);
+      const cupReveal = THREE.MathUtils.smoothstep(progress, 0.90, 0.985);
 
-      document.documentElement.classList.toggle("closing-phase", progress >= 0.81);
+      document.documentElement.classList.toggle("closing-phase", progress >= 0.82);
 
       if (closingRef.current) closingRef.current.style.opacity = String(closing);
 
-      if (smokeRef.current) {
-        smokeRef.current.style.opacity = String(0.12 + closing * 0.58);
-        smokeRef.current.style.transform = `translate3d(-50%, ${steamLift}px, 0) scale(${0.95 + closing * 0.05})`;
-      }
-
-      if (beansARef.current) {
-        beansARef.current.style.opacity = String(0.08 + closing * 0.70);
-        beansARef.current.style.transform = `translate3d(-50%, ${beanDrift}px, 0) scale(${0.95 + closing * 0.05})`;
-      }
-
-      if (beansBRef.current) {
-        beansBRef.current.style.opacity = String(0.04 + closing * 0.24);
-        beansBRef.current.style.transform = `translate3d(-50%, ${-beanDrift * 0.25}px, 0) scale(.88)`;
-      }
-
       if (cupRef.current) {
-        cupRef.current.style.opacity = String(cupReveal);
-        cupRef.current.style.transform = `translate3d(-50%, ${THREE.MathUtils.lerp(46, 0, cupReveal)}px, 0) scale(${0.96 + cupReveal * 0.04})`;
+        cupRef.current.style.opacity = String(cupReveal * 0.72);
+        cupRef.current.style.transform = `translate3d(-50%, ${THREE.MathUtils.lerp(32, 0, cupReveal)}px, 0) scale(${0.94 + cupReveal * 0.06})`;
       }
     };
 
@@ -408,9 +383,6 @@ export default function ParticleNarrative() {
       </div>
 
       <div className="closing-visual" ref={closingRef} aria-hidden="true">
-        <div className="closing-smoke" ref={smokeRef} />
-        <div className="closing-beans closing-beans--a" ref={beansARef} />
-        <div className="closing-beans closing-beans--b" ref={beansBRef} />
         <div className="closing-cup" ref={cupRef} />
       </div>
     </>
