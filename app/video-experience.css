@@ -72,10 +72,11 @@
 }
 
 .video-copy {
+  --copy-lift: 0px;
   position: absolute;
   top: 50%;
   width: min(560px, 38vw);
-  transform: translateY(-50%);
+  transform: translate3d(0, calc(-50% + var(--copy-lift)), 0);
   will-change: opacity, transform;
   transition: opacity .08s linear;
   text-shadow: 0 3px 26px rgba(0,0,0,.72);
@@ -94,7 +95,7 @@
 .video-copy--center {
   left: 50%;
   width: min(760px, 74vw);
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, calc(-50% + var(--copy-lift)), 0);
   text-align: center;
 }
 
@@ -267,7 +268,7 @@
     width: auto;
     max-width: none;
     text-align: left;
-    transform: none;
+    transform: translate3d(0, var(--copy-lift), 0);
   }
 
   .video-copy__index {
