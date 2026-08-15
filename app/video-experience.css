@@ -1,4 +1,4 @@
-/* Café da Serra — video-first editorial experience */
+/* Café da Serra — cinematic video-first experience */
 
 .video-experience {
   position: relative;
@@ -33,8 +33,9 @@
   z-index: 1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 50% 48%, transparent 0 37%, rgba(0,0,0,.08) 63%, rgba(0,0,0,.46) 100%),
-    linear-gradient(180deg, rgba(0,0,0,.22), transparent 22%, transparent 76%, rgba(0,0,0,.24));
+    radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.34) 0%, rgba(0,0,0,.18) 30%, transparent 64%),
+    radial-gradient(circle at 50% 48%, transparent 0 40%, rgba(0,0,0,.08) 65%, rgba(0,0,0,.50) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.20), transparent 23%, transparent 75%, rgba(0,0,0,.26));
 }
 
 .video-brand {
@@ -52,8 +53,8 @@
 }
 
 .video-brand span {
-  font-size: 11px;
-  letter-spacing: .10em;
+  font-size: 10px;
+  letter-spacing: .14em;
   text-transform: uppercase;
 }
 
@@ -64,6 +65,39 @@
   text-transform: uppercase;
 }
 
+.video-progress {
+  position: fixed;
+  z-index: 20;
+  left: 4vw;
+  bottom: 31px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: rgba(241,226,211,.50);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .14em;
+  pointer-events: none;
+}
+
+.video-progress strong {
+  color: #f2dfca;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.video-progress span {
+  display: block;
+  width: 34px;
+  height: 1px;
+  background: linear-gradient(90deg, #c8793f, rgba(200,121,63,.18));
+}
+
+.video-progress small {
+  font: inherit;
+}
+
 .video-copy-layer {
   position: fixed;
   inset: 0;
@@ -72,87 +106,78 @@
 }
 
 .video-copy {
-  --copy-lift: 0px;
+  --copy-scale: 1;
+  --copy-blur: 0px;
+  --title-tracking: -.045em;
+  --body-shift: 0px;
   position: absolute;
   top: 50%;
-  width: min(560px, 38vw);
-  transform: translate3d(0, calc(-50% + var(--copy-lift)), 0);
-  will-change: opacity, transform;
-  transition: opacity .08s linear;
-  text-shadow: 0 3px 26px rgba(0,0,0,.72);
-}
-
-.video-copy--left {
-  left: clamp(64px, 7.5vw, 148px);
-  text-align: left;
-}
-
-.video-copy--right {
-  right: clamp(64px, 7.5vw, 148px);
-  text-align: left;
-}
-
-.video-copy--center {
   left: 50%;
-  width: min(760px, 74vw);
-  transform: translate3d(-50%, calc(-50% + var(--copy-lift)), 0);
+  width: min(1040px, 84vw);
   text-align: center;
-}
-
-.video-copy__index {
-  margin-bottom: 22px;
-  color: #d48a4b;
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 14px;
-  letter-spacing: .12em;
+  transform: translate3d(-50%, -50%, 0) scale(var(--copy-scale));
+  transform-origin: center center;
+  filter: blur(var(--copy-blur));
+  will-change: opacity, transform, filter;
+  backface-visibility: hidden;
+  text-shadow: 0 4px 34px rgba(0,0,0,.68);
 }
 
 .video-copy__eyebrow {
-  margin: 0 0 18px;
-  color: #d79a65;
+  margin: 0 0 22px;
+  color: #d7955d;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 11px;
-  font-weight: 600;
-  letter-spacing: .16em;
+  font-weight: 650;
+  letter-spacing: .24em;
   text-transform: uppercase;
 }
 
 .video-copy__title {
-  margin: 0;
-  max-width: 720px;
-  color: #f4e7d7;
+  margin: 0 auto;
+  max-width: 1000px;
+  color: #f5e9dc;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(48px, 5.2vw, 86px);
+  font-size: clamp(64px, 7.4vw, 124px);
   font-weight: 400;
-  line-height: .96;
-  letter-spacing: -.045em;
+  line-height: .91;
+  letter-spacing: var(--title-tracking);
   text-wrap: balance;
+  text-shadow:
+    0 4px 30px rgba(0,0,0,.74),
+    0 12px 54px rgba(0,0,0,.42);
 }
 
-.video-copy--center .video-copy__title,
-.video-copy--center .video-copy__body {
-  margin-left: auto;
-  margin-right: auto;
+.video-copy--hero .video-copy__title {
+  max-width: 1080px;
+  font-size: clamp(68px, 7.9vw, 132px);
+}
+
+.video-copy--final .video-copy__title {
+  max-width: 960px;
+  font-size: clamp(72px, 8.25vw, 138px);
 }
 
 .video-copy__body {
-  margin: 24px 0 0;
-  max-width: 480px;
-  color: rgba(241,226,211,.77);
+  margin: 28px auto 0;
+  max-width: 660px;
+  color: rgba(244,231,217,.82);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(14px, 1.05vw, 17px);
+  font-size: clamp(14px, 1.08vw, 18px);
   font-weight: 300;
-  line-height: 1.65;
-  letter-spacing: -.01em;
+  line-height: 1.62;
+  letter-spacing: -.012em;
+  transform: translate3d(0, var(--body-shift), 0);
+  text-wrap: balance;
 }
 
 .video-copy__actions {
-  margin-top: 30px;
+  margin-top: 34px;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 22px;
-  pointer-events: auto;
+  gap: 24px;
+  transition: opacity .08s linear;
 }
 
 .video-copy__actions button,
@@ -160,25 +185,26 @@
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 10px;
   font-weight: 700;
-  letter-spacing: .11em;
+  letter-spacing: .12em;
   text-transform: uppercase;
   text-decoration: none;
 }
 
 .video-copy__actions button {
-  min-height: 46px;
-  padding: 0 22px;
+  min-height: 48px;
+  padding: 0 24px;
   border: 1px solid #d18a50;
   border-radius: 999px;
   background: #c97b3d;
   color: #160c07;
   cursor: pointer;
-  transition: transform .25s ease, background .25s ease;
+  transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
 }
 
 .video-copy__actions button:hover {
   background: #df9256;
   transform: translateY(-2px);
+  box-shadow: 0 10px 32px rgba(201,123,61,.18);
 }
 
 .video-copy__actions a {
@@ -191,11 +217,11 @@
   position: fixed;
   z-index: 12;
   left: 50%;
-  bottom: 34px;
+  bottom: 31px;
   display: flex;
   align-items: center;
   gap: 11px;
-  color: rgba(242,226,210,.58);
+  color: rgba(242,226,210,.55);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 9px;
   font-weight: 600;
@@ -245,7 +271,8 @@
 
   .video-experience__shade {
     background:
-      linear-gradient(180deg, rgba(0,0,0,.14) 0%, transparent 28%, rgba(0,0,0,.05) 54%, rgba(0,0,0,.72) 100%);
+      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,.38) 0%, rgba(0,0,0,.16) 34%, transparent 68%),
+      linear-gradient(180deg, rgba(0,0,0,.20) 0%, transparent 28%, transparent 72%, rgba(0,0,0,.36) 100%);
   }
 
   .video-brand {
@@ -257,70 +284,73 @@
     font-size: 23px;
   }
 
-  .video-copy,
-  .video-copy--left,
-  .video-copy--right,
-  .video-copy--center {
-    top: auto;
-    right: 20px;
-    bottom: max(62px, calc(env(safe-area-inset-bottom) + 42px));
+  .video-progress {
     left: 20px;
-    width: auto;
-    max-width: none;
-    text-align: left;
-    transform: translate3d(0, var(--copy-lift), 0);
+    bottom: max(20px, env(safe-area-inset-bottom));
   }
 
-  .video-copy__index {
-    margin-bottom: 12px;
-    font-size: 11px;
+  .video-copy {
+    top: 50%;
+    left: 50%;
+    width: calc(100vw - 40px);
+    transform: translate3d(-50%, -50%, 0) scale(var(--copy-scale));
+    text-align: center;
   }
 
   .video-copy__eyebrow {
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     font-size: 9px;
+    letter-spacing: .22em;
   }
 
-  .video-copy__title {
-    max-width: 92%;
-    font-size: clamp(42px, 12vw, 62px);
+  .video-copy__title,
+  .video-copy--hero .video-copy__title,
+  .video-copy--final .video-copy__title {
+    max-width: 100%;
+    font-size: clamp(46px, 13.2vw, 70px);
     line-height: .92;
   }
 
-  .video-copy__body,
-  .video-copy--center .video-copy__body {
-    max-width: 88%;
-    margin: 16px 0 0;
+  .video-copy__body {
+    max-width: min(540px, 88vw);
+    margin-top: 20px;
     font-size: 14px;
     line-height: 1.52;
   }
 
   .video-copy__actions {
-    justify-content: flex-start;
-    margin-top: 22px;
-    gap: 16px;
+    margin-top: 26px;
+    gap: 17px;
   }
 
   .video-scroll-cue {
     right: 20px;
-    bottom: 20px;
+    bottom: max(20px, env(safe-area-inset-bottom));
     left: auto;
     transform: none;
   }
 }
 
 @media (max-width: 560px) {
-  .video-copy__title {
-    font-size: clamp(38px, 11.5vw, 52px);
+  .video-copy__title,
+  .video-copy--hero .video-copy__title,
+  .video-copy--final .video-copy__title {
+    font-size: clamp(40px, 12.4vw, 58px);
   }
 
   .video-copy__body {
+    max-width: 92%;
     font-size: 13px;
   }
 
   .video-copy__actions {
-    align-items: flex-start;
+    align-items: center;
     flex-direction: column;
+    gap: 14px;
+  }
+
+  .video-copy__actions button {
+    min-width: min(280px, 78vw);
   }
 }
 
@@ -333,5 +363,10 @@
 
   .video-experience__film {
     position: fixed;
+  }
+
+  .video-copy {
+    filter: none !important;
+    transform: translate3d(-50%, -50%, 0) !important;
   }
 }
