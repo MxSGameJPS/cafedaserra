@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReservationModal from "@/components/ReservationModal";
 
 const scenes = [
@@ -69,15 +69,12 @@ function lerp(from: number, to: number, amount: number) {
   return from + (to - from) * amount;
 }
 
-function getSceneMotion(
-  progress: number,
-  scene: (typeof scenes)[number],
-) {
+function getSceneMotion(progress: number, scene: (typeof scenes)[number]) {
   if (progress <= scene.start || progress >= scene.end) {
     return {
       opacity: 0,
       scale: 0.92,
-      blur: 16,
+      blur: 7,
       tracking: 0.035,
       bodyShift: 18,
     };
@@ -91,7 +88,7 @@ function getSceneMotion(
     return {
       opacity: t,
       scale: lerp(0.92, 1, t),
-      blur: lerp(16, 0, t),
+      blur: lerp(7, 0, t),
       tracking: lerp(0.035, -0.045, t),
       bodyShift: lerp(18, 0, t),
     };
@@ -114,7 +111,7 @@ function getSceneMotion(
   return {
     opacity: 1 - t,
     scale: lerp(1, 1.075, t),
-    blur: lerp(0, 13, t),
+    blur: lerp(0, 6, t),
     tracking: lerp(-0.045, -0.065, t),
     bodyShift: lerp(0, -8, t),
   };
@@ -131,37 +128,70 @@ function getActiveScene(progress: number) {
 export default function HomePage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const targetTimeRef = useRef(0);
+  const scrollProgressRef = useRef(0);
+  const renderedProgressRef = useRef(-1);
   const animationRef = useRef<number | null>(null);
+  const copyRefs = useRef<Array<HTMLElement | null>>([]);
+  const progressNumberRef = useRef<HTMLElement>(null);
+  const finalActionsRef = useRef<HTMLDivElement>(null);
+  const scrollCueRef = useRef<HTMLDivElement>(null);
   const [ready, setReady] = useState(false);
-  const [progress, setProgress] = useState(0);
   const [reservationOpen, setReservationOpen] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
-    let scheduled = false;
+    const renderOverlay = (progress: number) => {
+      scenes.forEach((scene, index) => {
+        const node = copyRefs.current[index];
+        if (!node) return;
+
+        const motion = getSceneMotion(progress, scene);
+        const visible = motion.opacity > 0.002;
+
+        node.style.visibility = visible ? "visible" : "hidden";
+        node.style.opacity = String(motion.opacity);
+        node.style.setProperty("--copy-scale", String(motion.scale));
+        node.style.setProperty("--copy-blur", `${motion.blur}px`);
+        node.style.setProperty("--title-tracking", `${motion.tracking}em`);
+        node.style.setProperty("--body-shift", `${motion.bodyShift}px`);
+        node.style.pointerEvents = motion.opacity > 0.88 ? "auto" : "none";
+        node.setAttribute("aria-hidden", motion.opacity < 0.2 ? "true" : "false");
+      });
+
+      const activeScene = getActiveScene(progress);
+      if (progressNumberRef.current) {
+        progressNumberRef.current.textContent = scenes[activeScene].id;
+      }
+
+      const finalActionsPresence = smoothstep((progress - 0.89) / 0.055);
+      if (finalActionsRef.current) {
+        finalActionsRef.current.style.opacity = String(finalActionsPresence);
+        finalActionsRef.current.style.transform = `translate3d(0, ${(1 - finalActionsPresence) * 16}px, 0)`;
+        finalActionsRef.current.style.pointerEvents = finalActionsPresence > 0.85 ? "auto" : "none";
+      }
+
+      if (scrollCueRef.current) {
+        scrollCueRef.current.style.opacity = String(Math.max(0, 1 - progress * 12));
+      }
+    };
 
     const updateTargetTime = () => {
       if (!Number.isFinite(video.duration) || video.duration <= 0) return;
 
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
       const nextProgress = clamp01(window.scrollY / maxScroll);
+      scrollProgressRef.current = nextProgress;
       targetTimeRef.current = nextProgress * Math.max(0, video.duration - 0.04);
-
-      if (!scheduled) {
-        scheduled = true;
-        window.requestAnimationFrame(() => {
-          setProgress(nextProgress);
-          scheduled = false;
-        });
-      }
     };
 
     const onMetadata = () => {
       video.pause();
       video.currentTime = 0.001;
       updateTargetTime();
+      renderOverlay(scrollProgressRef.current);
+      renderedProgressRef.current = scrollProgressRef.current;
       setReady(true);
     };
 
@@ -176,6 +206,12 @@ export default function HomePage() {
         }
       }
 
+      const progress = scrollProgressRef.current;
+      if (Math.abs(progress - renderedProgressRef.current) > 0.00005) {
+        renderOverlay(progress);
+        renderedProgressRef.current = progress;
+      }
+
       animationRef.current = window.requestAnimationFrame(animate);
     };
 
@@ -186,6 +222,8 @@ export default function HomePage() {
     window.addEventListener("resize", updateTargetTime);
 
     updateTargetTime();
+    renderOverlay(scrollProgressRef.current);
+    renderedProgressRef.current = scrollProgressRef.current;
     animationRef.current = window.requestAnimationFrame(animate);
 
     return () => {
@@ -195,9 +233,6 @@ export default function HomePage() {
       if (animationRef.current !== null) window.cancelAnimationFrame(animationRef.current);
     };
   }, []);
-
-  const activeScene = getActiveScene(progress);
-  const finalActionsPresence = smoothstep((progress - 0.89) / 0.055);
 
   return (
     <main className={`video-experience${ready ? " is-ready" : ""}`}>
@@ -221,61 +256,52 @@ export default function HomePage() {
       </a>
 
       <div className="video-progress" aria-hidden="true">
-        <strong>{scenes[activeScene].id}</strong>
+        <strong ref={progressNumberRef}>01</strong>
         <span />
         <small>05</small>
       </div>
 
       <div className="video-copy-layer" id="top">
-        {scenes.map((scene) => {
-          const motion = getSceneMotion(progress, scene);
-          const style = {
-            opacity: motion.opacity,
-            "--copy-scale": motion.scale,
-            "--copy-blur": `${motion.blur}px`,
-            "--title-tracking": `${motion.tracking}em`,
-            "--body-shift": `${motion.bodyShift}px`,
-            pointerEvents: motion.opacity > 0.88 ? "auto" : "none",
-          } as CSSProperties;
+        {scenes.map((scene, index) => (
+          <section
+            key={scene.id}
+            ref={(node) => {
+              copyRefs.current[index] = node;
+            }}
+            className={`video-copy${scene.id === "01" ? " video-copy--hero" : ""}${scene.id === "05" ? " video-copy--final" : ""}`}
+            style={{
+              opacity: scene.id === "01" ? 1 : 0,
+              visibility: scene.id === "01" ? "visible" : "hidden",
+            }}
+            aria-hidden={scene.id === "01" ? "false" : "true"}
+          >
+            <p className="video-copy__eyebrow">{scene.eyebrow}</p>
+            <h2 className="video-copy__title">{scene.title}</h2>
+            <p className="video-copy__body">{scene.body}</p>
 
-          return (
-            <section
-              key={scene.id}
-              className={`video-copy${scene.id === "01" ? " video-copy--hero" : ""}${scene.id === "05" ? " video-copy--final" : ""}`}
-              style={style}
-              aria-hidden={motion.opacity < 0.2}
-            >
-              <p className="video-copy__eyebrow">{scene.eyebrow}</p>
-              <h2 className="video-copy__title">{scene.title}</h2>
-              <p className="video-copy__body">{scene.body}</p>
-
-              {scene.id === "05" && (
-                <div
-                  className="video-copy__actions"
-                  style={{
-                    opacity: finalActionsPresence,
-                    transform: `translate3d(0, ${(1 - finalActionsPresence) * 16}px, 0)`,
-                    pointerEvents: finalActionsPresence > 0.85 ? "auto" : "none",
-                  }}
+            {scene.id === "05" && (
+              <div
+                ref={finalActionsRef}
+                className="video-copy__actions"
+                style={{ opacity: 0, pointerEvents: "none" }}
+              >
+                <button type="button" onClick={() => setReservationOpen(true)}>
+                  Reservar uma mesa
+                </button>
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Portal+da+Serra+BR-116+km+230"
+                  target="_blank"
+                  rel="noreferrer"
                 >
-                  <button type="button" onClick={() => setReservationOpen(true)}>
-                    Reservar uma mesa
-                  </button>
-                  <a
-                    href="https://www.google.com/maps/search/?api=1&query=Portal+da+Serra+BR-116+km+230"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    Como chegar
-                  </a>
-                </div>
-              )}
-            </section>
-          );
-        })}
+                  Como chegar
+                </a>
+              </div>
+            )}
+          </section>
+        ))}
       </div>
 
-      <div className="video-scroll-cue" style={{ opacity: Math.max(0, 1 - progress * 12) }} aria-hidden="true">
+      <div ref={scrollCueRef} className="video-scroll-cue" aria-hidden="true">
         <span />
         Role para explorar
       </div>
