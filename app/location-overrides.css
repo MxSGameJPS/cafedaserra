@@ -117,8 +117,18 @@ html.location-phase .coffee-beans-layer {
     margin-top: 22px;
   }
 
-  /* The WebGL position is now controlled in ParticleNarrative itself.
-     No transform is applied to the whole canvas here. */
+  /* ParticleNarrative already reduces the pin internally. This final viewport
+     correction centers the rendered pin inside the reserved middle lane instead
+     of letting its left half sit over the shopping photography. */
+  .particle-canvas {
+    transition: transform .24s ease-out;
+    transform-origin: center center;
+  }
+
+  html.location-phase .particle-canvas {
+    transform: translate3d(7vw, 0, 0) scale(.88);
+  }
+
   #localizacao .scene-copy {
     text-shadow: 0 2px 18px rgba(0,0,0,.62);
   }
