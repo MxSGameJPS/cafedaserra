@@ -1,0 +1,70 @@
+/* Café da Serra — clean video-first experience */
+
+.video-experience {
+  position: relative;
+  min-height: 950svh;
+  background: #000;
+  overflow: clip;
+}
+
+.video-experience__film {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100vw;
+  height: 100svh;
+  object-fit: cover;
+  object-position: center center;
+  background: #000;
+  opacity: 0;
+  transform: translateZ(0) scale(1.002);
+  transition: opacity .55s ease;
+  pointer-events: none;
+}
+
+.video-experience.is-ready .video-experience__film {
+  opacity: 1;
+}
+
+.video-experience__track {
+  width: 1px;
+  height: 950svh;
+  pointer-events: none;
+}
+
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+@media (max-width: 900px) {
+  .video-experience,
+  .video-experience__track {
+    min-height: 800svh;
+    height: 800svh;
+  }
+
+  .video-experience__film {
+    height: 100dvh;
+    object-position: center center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video-experience,
+  .video-experience__track {
+    min-height: 100svh;
+    height: 100svh;
+  }
+
+  .video-experience__film {
+    position: fixed;
+  }
+}
