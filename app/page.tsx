@@ -13,7 +13,6 @@ const scenes = [
     holdStart: 0,
     holdEnd: 0.135,
     end: 0.195,
-    position: "right",
   },
   {
     id: "02",
@@ -24,7 +23,6 @@ const scenes = [
     holdStart: 0.205,
     holdEnd: 0.315,
     end: 0.375,
-    position: "right",
   },
   {
     id: "03",
@@ -35,7 +33,6 @@ const scenes = [
     holdStart: 0.405,
     holdEnd: 0.535,
     end: 0.595,
-    position: "left",
   },
   {
     id: "04",
@@ -46,7 +43,6 @@ const scenes = [
     holdStart: 0.625,
     holdEnd: 0.755,
     end: 0.815,
-    position: "right",
   },
   {
     id: "05",
@@ -57,30 +53,79 @@ const scenes = [
     holdStart: 0.845,
     holdEnd: 1,
     end: 1.01,
-    position: "center",
   },
 ] as const;
 
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
 function smoothstep(value: number) {
-  const t = Math.min(1, Math.max(0, value));
+  const t = clamp01(value);
   return t * t * (3 - 2 * t);
 }
 
-function scenePresence(
-  progress: number,
-  start: number,
-  holdStart: number,
-  holdEnd: number,
-  end: number,
-) {
-  if (progress <= start || progress >= end) return 0;
-  if (progress >= holdStart && progress <= holdEnd) return 1;
+function lerp(from: number, to: number, amount: number) {
+  return from + (to - from) * amount;
+}
 
-  if (progress < holdStart) {
-    return smoothstep((progress - start) / Math.max(0.001, holdStart - start));
+function getSceneMotion(
+  progress: number,
+  scene: (typeof scenes)[number],
+) {
+  if (progress <= scene.start || progress >= scene.end) {
+    return {
+      opacity: 0,
+      scale: 0.92,
+      blur: 16,
+      tracking: 0.035,
+      bodyShift: 18,
+    };
   }
 
-  return 1 - smoothstep((progress - holdEnd) / Math.max(0.001, end - holdEnd));
+  if (progress < scene.holdStart) {
+    const t = smoothstep(
+      (progress - scene.start) / Math.max(0.001, scene.holdStart - scene.start),
+    );
+
+    return {
+      opacity: t,
+      scale: lerp(0.92, 1, t),
+      blur: lerp(16, 0, t),
+      tracking: lerp(0.035, -0.045, t),
+      bodyShift: lerp(18, 0, t),
+    };
+  }
+
+  if (progress <= scene.holdEnd) {
+    return {
+      opacity: 1,
+      scale: 1,
+      blur: 0,
+      tracking: -0.045,
+      bodyShift: 0,
+    };
+  }
+
+  const t = smoothstep(
+    (progress - scene.holdEnd) / Math.max(0.001, scene.end - scene.holdEnd),
+  );
+
+  return {
+    opacity: 1 - t,
+    scale: lerp(1, 1.075, t),
+    blur: lerp(0, 13, t),
+    tracking: lerp(-0.045, -0.065, t),
+    bodyShift: lerp(0, -8, t),
+  };
+}
+
+function getActiveScene(progress: number) {
+  let current = 0;
+  for (let i = 0; i < scenes.length; i += 1) {
+    if (progress >= scenes[i].start) current = i;
+  }
+  return current;
 }
 
 export default function HomePage() {
@@ -101,7 +146,7 @@ export default function HomePage() {
       if (!Number.isFinite(video.duration) || video.duration <= 0) return;
 
       const maxScroll = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-      const nextProgress = Math.min(1, Math.max(0, window.scrollY / maxScroll));
+      const nextProgress = clamp01(window.scrollY / maxScroll);
       targetTimeRef.current = nextProgress * Math.max(0, video.duration - 0.04);
 
       if (!scheduled) {
@@ -151,6 +196,9 @@ export default function HomePage() {
     };
   }, []);
 
+  const activeScene = getActiveScene(progress);
+  const finalActionsPresence = smoothstep((progress - 0.89) / 0.055);
+
   return (
     <main className={`video-experience${ready ? " is-ready" : ""}`}>
       <h1 className="sr-only">Café da Serra</h1>
@@ -172,36 +220,44 @@ export default function HomePage() {
         <strong>Serra</strong>
       </a>
 
+      <div className="video-progress" aria-hidden="true">
+        <strong>{scenes[activeScene].id}</strong>
+        <span />
+        <small>05</small>
+      </div>
+
       <div className="video-copy-layer" id="top">
         {scenes.map((scene) => {
-          const presence = scenePresence(
-            progress,
-            scene.start,
-            scene.holdStart,
-            scene.holdEnd,
-            scene.end,
-          );
-
+          const motion = getSceneMotion(progress, scene);
           const style = {
-            opacity: presence,
-            "--copy-lift": `${(1 - presence) * 28}px`,
-            pointerEvents: presence > 0.82 ? "auto" : "none",
+            opacity: motion.opacity,
+            "--copy-scale": motion.scale,
+            "--copy-blur": `${motion.blur}px`,
+            "--title-tracking": `${motion.tracking}em`,
+            "--body-shift": `${motion.bodyShift}px`,
+            pointerEvents: motion.opacity > 0.88 ? "auto" : "none",
           } as CSSProperties;
 
           return (
             <section
               key={scene.id}
-              className={`video-copy video-copy--${scene.position}`}
+              className={`video-copy${scene.id === "01" ? " video-copy--hero" : ""}${scene.id === "05" ? " video-copy--final" : ""}`}
               style={style}
-              aria-hidden={presence < 0.2}
+              aria-hidden={motion.opacity < 0.2}
             >
-              <div className="video-copy__index">{scene.id}</div>
               <p className="video-copy__eyebrow">{scene.eyebrow}</p>
               <h2 className="video-copy__title">{scene.title}</h2>
               <p className="video-copy__body">{scene.body}</p>
 
               {scene.id === "05" && (
-                <div className="video-copy__actions">
+                <div
+                  className="video-copy__actions"
+                  style={{
+                    opacity: finalActionsPresence,
+                    transform: `translate3d(0, ${(1 - finalActionsPresence) * 16}px, 0)`,
+                    pointerEvents: finalActionsPresence > 0.85 ? "auto" : "none",
+                  }}
+                >
                   <button type="button" onClick={() => setReservationOpen(true)}>
                     Reservar uma mesa
                   </button>
