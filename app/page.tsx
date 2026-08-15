@@ -25,10 +25,150 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", update);
   }, []);
 
+  const smokeProgress = Math.min(1, Math.max(0, (progress - 0.78) / 0.16));
+  const beanDrift = Math.sin(progress * Math.PI * 1.4);
+
   return (
     <main className="site-shell">
       <ParticleNarrative />
+
+      <div
+        className="coffee-beans-layer coffee-beans-layer--near"
+        aria-hidden="true"
+        style={{
+          opacity: 0.27 + progress * 0.035,
+          transform: `translate3d(${beanDrift * -9}px, ${progress * -18}px, 0) scale(1.02)`,
+        }}
+      />
+      <div
+        className="coffee-beans-layer coffee-beans-layer--far"
+        aria-hidden="true"
+        style={{
+          opacity: 0.12 + progress * 0.025,
+          transform: `translate3d(${beanDrift * 12}px, ${progress * 12}px, 0) rotate(10deg) scale(1.08)`,
+        }}
+      />
+      <div
+        className="reference-smoke-layer"
+        aria-hidden="true"
+        style={{
+          opacity: smokeProgress * 0.72,
+          transform: `translate3d(0, ${26 - smokeProgress * 26}px, 0) scale(${0.93 + smokeProgress * 0.07})`,
+        }}
+      />
+
       <div className="particle-vignette" />
+
+      <style>{`
+        .coffee-beans-layer {
+          position: fixed;
+          inset: 0;
+          z-index: 1;
+          pointer-events: none;
+          background-image: url('/cafe.png');
+          background-repeat: no-repeat;
+          will-change: transform, opacity;
+          transition: opacity .18s linear;
+        }
+
+        .coffee-beans-layer--near {
+          background-size: min(69vw, 1120px) auto;
+          background-position: 4vw 5vh;
+          filter: brightness(.72) saturate(.88) contrast(1.08);
+        }
+
+        .coffee-beans-layer--far {
+          background-size: min(46vw, 760px) auto;
+          background-position: 96% 72%;
+          filter: brightness(.52) saturate(.72) blur(.45px);
+          transform-origin: center;
+        }
+
+        .reference-smoke-layer {
+          position: fixed;
+          z-index: 2;
+          pointer-events: none;
+          left: 16vw;
+          bottom: 39vh;
+          width: min(31vw, 520px);
+          height: min(46vh, 430px);
+          background-image: url('/fumaca.png');
+          background-repeat: no-repeat;
+          background-size: contain;
+          background-position: center bottom;
+          mix-blend-mode: screen;
+          filter: brightness(.58) sepia(.22) saturate(.5) blur(.2px);
+          transform-origin: center bottom;
+          will-change: opacity, transform;
+          transition: opacity .12s linear;
+        }
+
+        @media (min-width: 901px) {
+          .site-shell .scene {
+            padding-left: 6vw;
+            padding-right: 6vw;
+          }
+
+          .site-shell .scene-inner,
+          .site-shell .hero .scene-inner,
+          .site-shell .final-scene .scene-inner {
+            width: min(1380px, 88vw);
+            max-width: none;
+            margin-left: auto;
+            margin-right: auto;
+            grid-template-columns: minmax(0, 1.12fr) minmax(430px, .88fr);
+            gap: clamp(52px, 4.6vw, 86px);
+          }
+
+          .site-shell .scene-copy,
+          .site-shell .hero .scene-copy,
+          .site-shell .final-scene .scene-copy {
+            width: min(560px, 100%);
+            justify-self: start;
+          }
+
+          .site-shell .hero .scene-copy {
+            width: min(620px, 100%);
+          }
+
+          .site-shell .hero .scene-title {
+            font-size: clamp(52px, 5vw, 82px);
+            white-space: nowrap;
+            letter-spacing: -.035em;
+          }
+
+          .site-shell .scene-title.small {
+            font-size: clamp(46px, 4.65vw, 76px);
+          }
+
+          .site-shell .scene-body {
+            max-width: 500px;
+          }
+
+          .site-shell .final-lockup {
+            width: min(570px, 100%);
+          }
+        }
+
+        @media (max-width: 900px) {
+          .coffee-beans-layer--near {
+            background-size: 126vw auto;
+            background-position: 42% 12vh;
+            opacity: .16 !important;
+          }
+
+          .coffee-beans-layer--far {
+            display: none;
+          }
+
+          .reference-smoke-layer {
+            left: 10vw;
+            bottom: 39vh;
+            width: 80vw;
+            height: 42vh;
+          }
+        }
+      `}</style>
 
       <header className="site-header">
         <a href="#inicio" className="brand" aria-label="Café da Serra - início">
