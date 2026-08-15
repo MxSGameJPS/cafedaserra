@@ -1,0 +1,150 @@
+/* Location scene: photo | particle lane | copy.
+   Keeps each visual element in its own territory, matching the approved art direction. */
+
+@media (min-width: 901px) {
+  #localizacao {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  #localizacao::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(90deg,
+        rgba(5,3,2,.08) 0%,
+        rgba(5,3,2,.04) 40%,
+        rgba(5,3,2,.40) 58%,
+        rgba(5,3,2,.88) 70%,
+        #050302 86%);
+  }
+
+  #localizacao .scene-inner {
+    position: relative;
+    z-index: 2;
+    width: min(1500px, 92vw) !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+    display: grid;
+    grid-template-columns: minmax(0, 45fr) minmax(170px, 18fr) minmax(360px, 37fr) !important;
+    gap: 0 !important;
+    align-items: center;
+  }
+
+  #localizacao .scene-photo {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    min-height: min(65vh, 630px);
+    width: 100%;
+  }
+
+  #localizacao .scene-photo--shopping::before {
+    inset: 0 -4% 0 -8% !important;
+    opacity: .88 !important;
+    background-position: center 52% !important;
+    filter: brightness(.48) sepia(.20) saturate(.82) contrast(1.10) !important;
+    -webkit-mask-image: linear-gradient(90deg,
+      #000 0%,
+      #000 70%,
+      rgba(0,0,0,.94) 80%,
+      rgba(0,0,0,.52) 91%,
+      transparent 100%) !important;
+    mask-image: linear-gradient(90deg,
+      #000 0%,
+      #000 70%,
+      rgba(0,0,0,.94) 80%,
+      rgba(0,0,0,.52) 91%,
+      transparent 100%) !important;
+  }
+
+  #localizacao .scene-photo--shopping::after {
+    inset: 0 -5% 0 -8% !important;
+    background:
+      linear-gradient(90deg,
+        rgba(5,3,2,.20) 0%,
+        rgba(5,3,2,.01) 48%,
+        rgba(5,3,2,.18) 68%,
+        rgba(5,3,2,.92) 100%),
+      radial-gradient(circle at 62% 48%, rgba(184,107,50,.09), transparent 56%) !important;
+  }
+
+  #localizacao .scene-copy {
+    grid-column: 3 !important;
+    grid-row: 1 !important;
+    width: min(440px, 100%) !important;
+    justify-self: start !important;
+    padding-left: clamp(16px, 1.8vw, 34px);
+    position: relative;
+    z-index: 4;
+  }
+
+  #localizacao .scene-copy::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -28% -26% -28% -58px;
+    pointer-events: none;
+    background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(5,3,2,.62) 30%,
+      rgba(5,3,2,.92) 60%,
+      #050302 90%);
+  }
+
+  #localizacao .scene-kicker {
+    margin-bottom: 15px;
+  }
+
+  #localizacao .scene-title.small {
+    max-width: 440px;
+    font-size: clamp(42px, 3.25vw, 58px) !important;
+    line-height: .95;
+    letter-spacing: -.035em;
+  }
+
+  #localizacao .scene-body {
+    max-width: 420px !important;
+    margin-top: 20px;
+    font-size: clamp(14px, 1vw, 16px);
+    line-height: 1.58;
+  }
+
+  #localizacao .location-card {
+    margin-top: 24px;
+  }
+
+  /* Move the WebGL pin out of the photo and into the reserved center lane.
+     The animation follows the same normalized scroll rhythm as the 5 scenes. */
+  .particle-canvas {
+    transform-origin: center center;
+    animation: location-particle-lane linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  @keyframes location-particle-lane {
+    0%, 34% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    43%, 57% {
+      transform: translate3d(19vw, 0, 0) scale(.74);
+    }
+    66%, 100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+  }
+
+  /* Give the location copy a clean dark field so the global coffee-bean layer
+     stays atmospheric instead of competing with the information. */
+  #localizacao .scene-copy {
+    text-shadow: 0 2px 18px rgba(0,0,0,.62);
+  }
+}
+
+@media (max-width: 900px) {
+  #localizacao .scene-title.small {
+    max-width: 88%;
+  }
+}
