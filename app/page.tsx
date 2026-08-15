@@ -25,7 +25,7 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", update);
   }, []);
 
-  const smokeProgress = Math.min(1, Math.max(0, (progress - 0.68) / 0.22));
+  const smokeProgress = Math.min(1, Math.max(0, (progress - 0.82) / 0.14));
   const beanDrift = Math.sin(progress * Math.PI * 1.4);
 
   return (
@@ -52,8 +52,8 @@ export default function HomePage() {
         className="reference-smoke-layer"
         aria-hidden="true"
         style={{
-          opacity: smokeProgress * 0.96,
-          transform: `translate3d(0, ${46 - smokeProgress * 46}px, 0) scale(${0.96 + smokeProgress * 0.05})`,
+          opacity: smokeProgress * 0.78,
+          transform: `translate3d(0, ${24 - smokeProgress * 24}px, 0) scale(${0.90 + smokeProgress * 0.10})`,
         }}
       />
 
@@ -88,23 +88,22 @@ export default function HomePage() {
           position: fixed;
           z-index: 2;
           pointer-events: none;
-          left: 17vw;
-          bottom: 31vh;
-          width: min(27vw, 460px);
-          height: min(59vh, 560px);
+          left: 24.5vw;
+          bottom: 48vh;
+          width: min(13.5vw, 235px);
+          height: min(35vh, 335px);
           overflow: hidden;
           background-image: url('/fumaca.png');
           background-repeat: no-repeat;
-          /* fumaca.png is a 1920x1080 transparent canvas whose visible smoke
-             occupies only the central portion. Zoom the source inside this
-             viewport instead of fitting the entire transparent canvas. */
-          background-size: 300% auto;
-          background-position: center 44%;
+          background-size: 520% auto;
+          background-position: center 47%;
           mix-blend-mode: screen;
-          filter: brightness(.92) contrast(1.16) sepia(.08) saturate(.52);
+          filter: brightness(.76) contrast(1.08) saturate(.28) blur(.35px);
           transform-origin: center bottom;
           will-change: opacity, transform;
           transition: opacity .1s linear;
+          -webkit-mask-image: linear-gradient(to top, #000 0%, #000 78%, transparent 100%);
+          mask-image: linear-gradient(to top, #000 0%, #000 78%, transparent 100%);
         }
 
         @media (min-width: 901px) {
@@ -166,12 +165,12 @@ export default function HomePage() {
           }
 
           .reference-smoke-layer {
-            left: 7vw;
-            bottom: 34vh;
-            width: 86vw;
-            height: 50vh;
-            background-size: 280% auto;
-            background-position: center 45%;
+            left: 36vw;
+            bottom: 48vh;
+            width: 28vw;
+            height: 31vh;
+            background-size: 500% auto;
+            background-position: center 47%;
           }
         }
       `}</style>
