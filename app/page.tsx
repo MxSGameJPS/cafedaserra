@@ -25,7 +25,7 @@ export default function HomePage() {
     return () => window.removeEventListener("scroll", update);
   }, []);
 
-  const smokeProgress = Math.min(1, Math.max(0, (progress - 0.78) / 0.16));
+  const smokeProgress = Math.min(1, Math.max(0, (progress - 0.68) / 0.22));
   const beanDrift = Math.sin(progress * Math.PI * 1.4);
 
   return (
@@ -52,8 +52,8 @@ export default function HomePage() {
         className="reference-smoke-layer"
         aria-hidden="true"
         style={{
-          opacity: smokeProgress * 0.72,
-          transform: `translate3d(0, ${26 - smokeProgress * 26}px, 0) scale(${0.93 + smokeProgress * 0.07})`,
+          opacity: smokeProgress * 0.96,
+          transform: `translate3d(0, ${46 - smokeProgress * 46}px, 0) scale(${0.96 + smokeProgress * 0.05})`,
         }}
       />
 
@@ -88,19 +88,23 @@ export default function HomePage() {
           position: fixed;
           z-index: 2;
           pointer-events: none;
-          left: 16vw;
-          bottom: 39vh;
-          width: min(31vw, 520px);
-          height: min(46vh, 430px);
+          left: 17vw;
+          bottom: 31vh;
+          width: min(27vw, 460px);
+          height: min(59vh, 560px);
+          overflow: hidden;
           background-image: url('/fumaca.png');
           background-repeat: no-repeat;
-          background-size: contain;
-          background-position: center bottom;
+          /* fumaca.png is a 1920x1080 transparent canvas whose visible smoke
+             occupies only the central portion. Zoom the source inside this
+             viewport instead of fitting the entire transparent canvas. */
+          background-size: 300% auto;
+          background-position: center 44%;
           mix-blend-mode: screen;
-          filter: brightness(.58) sepia(.22) saturate(.5) blur(.2px);
+          filter: brightness(.92) contrast(1.16) sepia(.08) saturate(.52);
           transform-origin: center bottom;
           will-change: opacity, transform;
-          transition: opacity .12s linear;
+          transition: opacity .1s linear;
         }
 
         @media (min-width: 901px) {
@@ -162,10 +166,12 @@ export default function HomePage() {
           }
 
           .reference-smoke-layer {
-            left: 10vw;
-            bottom: 39vh;
-            width: 80vw;
-            height: 42vh;
+            left: 7vw;
+            bottom: 34vh;
+            width: 86vw;
+            height: 50vh;
+            background-size: 280% auto;
+            background-position: center 45%;
           }
         }
       `}</style>
