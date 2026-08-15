@@ -27,6 +27,50 @@ html.location-phase .coffee-beans-layer {
     );
   }
 
+  /*
+   * Particle-map floor under the WebGL location pin.
+   * The road network is built with gradients and then broken into tiny dots
+   * by the mask, so visually it reads as the same particle language as the pin
+   * without stealing any particles from the pin geometry itself.
+   */
+  #localizacao::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    pointer-events: none;
+    left: 51.8vw;
+    top: 68%;
+    width: min(27vw, 470px);
+    height: min(19vh, 175px);
+    opacity: 0;
+    transform: translate(-50%, -50%) perspective(640px) rotateX(61deg) rotateZ(-8deg) scale(.84);
+    transform-origin: center;
+    transition: opacity .32s ease, transform .42s cubic-bezier(.2,.75,.25,1);
+    background:
+      linear-gradient(8deg, transparent 0 42%, rgba(201,126,57,.70) 42.5% 44%, transparent 44.5% 100%),
+      linear-gradient(-13deg, transparent 0 25%, rgba(169,89,34,.54) 25.5% 27%, transparent 27.5% 100%),
+      linear-gradient(21deg, transparent 0 66%, rgba(222,151,84,.50) 66.5% 68%, transparent 68.5% 100%),
+      linear-gradient(77deg, transparent 0 31%, rgba(181,101,43,.50) 31.5% 33%, transparent 33.5% 100%),
+      linear-gradient(96deg, transparent 0 58%, rgba(224,158,94,.42) 58.5% 60%, transparent 60.5% 100%),
+      linear-gradient(-57deg, transparent 0 47%, rgba(154,76,28,.44) 47.5% 49%, transparent 49.5% 100%),
+      radial-gradient(ellipse at 50% 53%, rgba(175,91,34,.18), transparent 68%);
+    -webkit-mask-image:
+      radial-gradient(circle at center, #000 0%, #000 62%, rgba(0,0,0,.72) 75%, transparent 100%),
+      repeating-radial-gradient(circle at 1px 1px, #000 0 1.1px, transparent 1.35px 5.5px);
+    mask-image:
+      radial-gradient(circle at center, #000 0%, #000 62%, rgba(0,0,0,.72) 75%, transparent 100%),
+      repeating-radial-gradient(circle at 1px 1px, #000 0 1.1px, transparent 1.35px 5.5px);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    filter: drop-shadow(0 0 8px rgba(198,111,48,.18));
+    clip-path: polygon(7% 18%, 88% 0, 100% 67%, 19% 100%, 0 59%);
+  }
+
+  html.location-phase #localizacao::before {
+    opacity: .54;
+    transform: translate(-50%, -50%) perspective(640px) rotateX(61deg) rotateZ(-8deg) scale(1);
+  }
+
   #localizacao .scene-inner {
     position: relative;
     z-index: 2;
