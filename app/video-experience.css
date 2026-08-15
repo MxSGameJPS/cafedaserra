@@ -118,7 +118,8 @@
   transform: translate3d(-50%, -50%, 0) scale(var(--copy-scale));
   transform-origin: center center;
   filter: blur(var(--copy-blur));
-  will-change: opacity, transform, filter;
+  will-change: opacity, transform;
+  contain: layout paint style;
   backface-visibility: hidden;
   text-shadow: 0 4px 34px rgba(0,0,0,.68);
 }
@@ -177,7 +178,6 @@
   justify-content: center;
   align-items: center;
   gap: 24px;
-  transition: opacity .08s linear;
 }
 
 .video-copy__actions button,
@@ -228,7 +228,6 @@
   letter-spacing: .15em;
   text-transform: uppercase;
   transform: translateX(-50%);
-  transition: opacity .2s linear;
   pointer-events: none;
 }
 
