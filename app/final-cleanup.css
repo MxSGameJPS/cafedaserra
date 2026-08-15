@@ -1,0 +1,150 @@
+/* Final scene — one calm focal point. */
+
+.final-scene {
+  min-height: 118svh !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: center;
+  padding-top: 120px !important;
+  padding-bottom: 120px !important;
+}
+
+.final-scene .scene-inner {
+  width: min(980px, 88vw) !important;
+  min-height: 72svh;
+  margin: 0 auto !important;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  place-items: center !important;
+  gap: 0 !important;
+}
+
+.final-scene .scene-copy,
+.final-scene .final-lockup,
+.final-scene.scene--copy-left .scene-copy {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  justify-self: center !important;
+  align-self: center !important;
+  width: min(780px, 100%) !important;
+  max-width: none !important;
+  padding: 0 !important;
+  margin: 0 auto !important;
+  text-align: center;
+  z-index: 12;
+}
+
+.final-scene .scene-visual {
+  display: none !important;
+}
+
+.final-scene .scene-kicker {
+  margin-bottom: 20px !important;
+  text-align: center;
+}
+
+.final-scene .scene-title,
+.final-scene .scene-title.small,
+.final-scene .final-lockup .scene-title {
+  width: 100%;
+  max-width: 800px !important;
+  margin-inline: auto !important;
+  font-size: clamp(68px, 7.4vw, 108px) !important;
+  line-height: .90 !important;
+  letter-spacing: -.05em !important;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.final-scene .scene-body {
+  max-width: 560px !important;
+  margin: 28px auto 0 !important;
+  text-align: center;
+  color: var(--cafe-soft);
+}
+
+.final-scene .final-actions {
+  margin-top: 32px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px !important;
+}
+
+/* Only the cup remains. It is a quiet signature, not a competing visual. */
+.closing-visual {
+  position: fixed !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100vw !important;
+  height: 100svh !important;
+  z-index: 5 !important;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.closing-smoke,
+.closing-beans {
+  display: none !important;
+}
+
+.closing-cup {
+  left: 50% !important;
+  bottom: 2.5vh !important;
+  width: min(20vw, 320px) !important;
+  height: min(23vh, 240px) !important;
+  filter: drop-shadow(0 22px 42px rgba(0,0,0,.45));
+}
+
+.closing-cup::before {
+  opacity: .82;
+  filter: brightness(.80) contrast(1.05) saturate(.72) !important;
+}
+
+@media (max-width: 900px) {
+  .final-scene {
+    min-height: 116svh !important;
+    padding: 96px 20px 124px !important;
+  }
+
+  .final-scene .scene-inner {
+    width: 100% !important;
+    min-height: 76svh;
+  }
+
+  .final-scene .scene-copy,
+  .final-scene .final-lockup,
+  .final-scene.scene--copy-left .scene-copy {
+    padding: 0 !important;
+  }
+
+  .final-scene .scene-title,
+  .final-scene .scene-title.small,
+  .final-scene .final-lockup .scene-title {
+    font-size: clamp(50px, 14vw, 70px) !important;
+    line-height: .92 !important;
+  }
+
+  .final-scene .scene-body {
+    max-width: 31rem !important;
+    font-size: 15px !important;
+  }
+
+  .final-scene .final-actions {
+    width: min(360px, 100%);
+    margin-inline: auto;
+    flex-direction: column;
+    gap: 14px !important;
+  }
+
+  .final-scene .action-primary {
+    width: 100%;
+  }
+
+  .closing-cup {
+    bottom: 1.5vh !important;
+    width: min(46vw, 250px) !important;
+    height: 18vh !important;
+  }
+}
