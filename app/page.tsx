@@ -69,6 +69,17 @@ export default function HomePage() {
     const video = videoRef.current;
     if (!video) return;
 
+    const mobileMedia = window.matchMedia("(max-width: 900px)");
+    const coarsePointerMedia = window.matchMedia("(pointer: coarse)");
+    const seekableVideo = video as HTMLVideoElement & {
+      fastSeek?: (time: number) => void;
+    };
+
+    let lastMobileSeekAt = 0;
+    let playPromisePending = false;
+
+    const isMobileMode = () => mobileMedia.matches || coarsePointerMedia.matches;
+
     const activateScene = (index: number) => {
       if (activeSceneRef.current === index) return;
 
@@ -102,25 +113,114 @@ export default function HomePage() {
       }
     };
 
+    const pausePlayback = () => {
+      if (!video.paused) video.pause();
+    };
+
+    const startPlayback = () => {
+      if (!video.paused || playPromisePending || video.seeking) return;
+
+      playPromisePending = true;
+      const result = video.play();
+
+      if (result && typeof result.finally === "function") {
+        result
+          .catch(() => undefined)
+          .finally(() => {
+            playPromisePending = false;
+          });
+      } else {
+        playPromisePending = false;
+      }
+    };
+
+    const seekMobile = (time: number, now: number) => {
+      if (video.seeking || now - lastMobileSeekAt < 150) return false;
+
+      const safeTime = Math.max(0.001, Math.min(time, Math.max(0.001, video.duration - 0.04)));
+      pausePlayback();
+
+      if (typeof seekableVideo.fastSeek === "function") {
+        seekableVideo.fastSeek(safeTime);
+      } else {
+        video.currentTime = safeTime;
+      }
+
+      lastMobileSeekAt = now;
+      return true;
+    };
+
+    const updateDesktopVideo = () => {
+      const target = targetTimeRef.current;
+      const difference = target - video.currentTime;
+
+      if (Math.abs(difference) > 0.012) {
+        const step = Math.abs(difference) > 1.25 ? 0.18 : 0.11;
+        video.currentTime += difference * step;
+      }
+    };
+
+    const updateMobileVideo = (now: number) => {
+      const target = targetTimeRef.current;
+      const difference = target - video.currentTime;
+      const distance = Math.abs(difference);
+
+      // Close enough: stop native playback and let the current decoded frame rest.
+      if (distance < 0.09) {
+        pausePlayback();
+        video.playbackRate = 1;
+        return;
+      }
+
+      // Scrolling backwards cannot be reproduced natively. Seek in controlled intervals.
+      if (difference < 0) {
+        if (distance > 0.12) seekMobile(target, now);
+        return;
+      }
+
+      // A very fast swipe can move the target several seconds ahead. Do one coarse
+      // jump instead of flooding the decoder with dozens of currentTime assignments.
+      if (distance > 1.8 && now - lastMobileSeekAt >= 220 && !video.seeking) {
+        const jump = video.currentTime + distance * 0.58;
+        if (seekMobile(jump, now)) return;
+      }
+
+      // For forward movement, native playback is substantially cheaper on mobile
+      // than repeatedly seeking to arbitrary frames.
+      const desiredRate = Math.min(4, Math.max(0.75, distance * 1.65));
+      if (Math.abs(video.playbackRate - desiredRate) > 0.15) {
+        video.playbackRate = desiredRate;
+      }
+      startPlayback();
+    };
+
     const onMetadata = () => {
       video.pause();
+      video.playbackRate = 1;
       video.currentTime = 0.001;
       updateTargetTime();
       setReady(true);
     };
 
-    const animate = () => {
+    const animate = (now: number) => {
       if (video.readyState >= 2 && Number.isFinite(video.duration)) {
-        const target = targetTimeRef.current;
-        const difference = target - video.currentTime;
-
-        if (Math.abs(difference) > 0.012) {
-          const step = Math.abs(difference) > 1.25 ? 0.18 : 0.11;
-          video.currentTime += difference * step;
+        if (isMobileMode()) {
+          updateMobileVideo(now);
+        } else {
+          pausePlayback();
+          video.playbackRate = 1;
+          updateDesktopVideo();
         }
       }
 
       animationRef.current = window.requestAnimationFrame(animate);
+    };
+
+    const onModeChange = () => {
+      pausePlayback();
+      video.playbackRate = 1;
+      lastMobileSeekAt = 0;
+      updateTargetTime();
     };
 
     if (video.readyState >= 1) onMetadata();
@@ -128,6 +228,8 @@ export default function HomePage() {
     video.addEventListener("loadedmetadata", onMetadata);
     window.addEventListener("scroll", updateTargetTime, { passive: true });
     window.addEventListener("resize", updateTargetTime);
+    mobileMedia.addEventListener?.("change", onModeChange);
+    coarsePointerMedia.addEventListener?.("change", onModeChange);
 
     updateTargetTime();
     animationRef.current = window.requestAnimationFrame(animate);
@@ -136,6 +238,9 @@ export default function HomePage() {
       video.removeEventListener("loadedmetadata", onMetadata);
       window.removeEventListener("scroll", updateTargetTime);
       window.removeEventListener("resize", updateTargetTime);
+      mobileMedia.removeEventListener?.("change", onModeChange);
+      coarsePointerMedia.removeEventListener?.("change", onModeChange);
+      pausePlayback();
       if (animationRef.current !== null) window.cancelAnimationFrame(animationRef.current);
     };
   }, []);
