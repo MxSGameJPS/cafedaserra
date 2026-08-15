@@ -1,0 +1,117 @@
+/* Particle scene transitions
+   Keep the morphs visually cohesive: particles dim and soften while changing
+   shape, then return at full strength only after the next silhouette is formed.
+   This prevents the in-between particles from reading as random objects flying
+   across the neighboring scene. */
+
+.particle-canvas {
+  will-change: opacity, filter;
+}
+
+@supports (animation-timeline: scroll()) {
+  .particle-canvas {
+    animation-name: particle-scene-cohesion;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+  }
+
+  @keyframes particle-scene-cohesion {
+    /* Pilão estável */
+    0%, 11.5% {
+      opacity: 1;
+      filter: blur(0) brightness(1);
+    }
+
+    /* Pilão -> grão: esconde o miolo caótico do morph */
+    13.5% {
+      opacity: .78;
+      filter: blur(.22px) brightness(.96);
+    }
+    16% {
+      opacity: .46;
+      filter: blur(.62px) brightness(.90);
+    }
+    18.5% {
+      opacity: .78;
+      filter: blur(.22px) brightness(.96);
+    }
+
+    /* Grão permanece completamente formado */
+    20%, 34.5% {
+      opacity: 1;
+      filter: blur(0) brightness(1);
+    }
+
+    /* Grão -> pin */
+    37% {
+      opacity: .80;
+      filter: blur(.20px) brightness(.96);
+    }
+    40.5% {
+      opacity: .44;
+      filter: blur(.64px) brightness(.89);
+    }
+    44% {
+      opacity: .80;
+      filter: blur(.20px) brightness(.96);
+    }
+
+    /* Pin + mapa estáveis */
+    46%, 57.5% {
+      opacity: 1;
+      filter: blur(0) brightness(1);
+    }
+
+    /* Pin -> fluxo da experiência */
+    60.5% {
+      opacity: .76;
+      filter: blur(.24px) brightness(.95);
+    }
+    63.5% {
+      opacity: .40;
+      filter: blur(.68px) brightness(.88);
+    }
+    67% {
+      opacity: .72;
+      filter: blur(.24px) brightness(.94);
+    }
+
+    /* Experiência estável */
+    69%, 79.5% {
+      opacity: 1;
+      filter: blur(0) brightness(1);
+    }
+
+    /* Fluxo -> fechamento; os assets reais assumem o protagonismo */
+    82.5% {
+      opacity: .68;
+      filter: blur(.26px) brightness(.94);
+    }
+    85.5% {
+      opacity: .34;
+      filter: blur(.72px) brightness(.86);
+    }
+    89% {
+      opacity: .52;
+      filter: blur(.32px) brightness(.90);
+    }
+    92%, 100% {
+      opacity: .42;
+      filter: blur(.18px) brightness(.92);
+    }
+  }
+}
+
+/* The location and closing phases already have scene-specific positioning and
+   opacity rules. Preserve those as the final authority over the generic morph. */
+html.location-phase .particle-canvas {
+  filter: blur(0) brightness(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .particle-canvas {
+    animation: none !important;
+    filter: none !important;
+  }
+}
