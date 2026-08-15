@@ -35,26 +35,55 @@ function rotate(x: number, y: number, angle: number) {
 
 function createMortar() {
   const target = new Float32Array(PARTICLE_COUNT * 3);
-  const bowlCount = Math.floor(PARTICLE_COUNT * 0.68);
+  const rimEnd = Math.floor(PARTICLE_COUNT * 0.26);
+  const bodyEnd = Math.floor(PARTICLE_COUNT * 0.66);
+  const pestleEnd = Math.floor(PARTICLE_COUNT * 0.93);
 
   for (let i = 0; i < PARTICLE_COUNT; i++) {
-    if (i < bowlCount) {
+    if (i < rimEnd) {
+      // Thick elliptical rim with an intentionally empty center, closer to a real mortar.
       const a = randomFor(i, 1) * TAU;
-      const r = Math.pow(randomFor(i, 2), 0.58);
-      const rimBias = randomFor(i, 3);
-      const radius = (rimBias > 0.72 ? 1.95 + r * 0.28 : 1.72 * r);
-      const x = Math.cos(a) * radius;
-      const y = -1.08 + Math.sin(a) * radius * 0.48 - Math.abs(x) * 0.05;
-      const z = (randomFor(i, 4) - 0.5) * 0.72;
-      setPoint(target, i, x - 0.35, y, z);
+      const ring = 0.72 + randomFor(i, 2) * 0.3;
+      const x = Math.cos(a) * 2.02 * ring;
+      const y = -0.48 + Math.sin(a) * 0.55 * ring;
+      const z = (randomFor(i, 3) - 0.5) * (0.42 + (1 - ring) * 0.8);
+      setPoint(target, i, x - 0.22, y, z);
+    } else if (i < bodyEnd) {
+      // Dense stone body: wider at the mouth and subtly narrower toward the base.
+      const t = randomFor(i, 4);
+      const width = 1.82 - t * 0.34;
+      const xNorm = randomFor(i, 5) * 2 - 1;
+      const x = xNorm * width;
+      const curvedSide = Math.pow(Math.abs(xNorm), 2.2) * 0.18;
+      const y = -0.66 - t * 1.42 + curvedSide;
+      const z = (randomFor(i, 6) - 0.5) * (0.86 - t * 0.2);
+      setPoint(target, i, x - 0.22, y, z);
+    } else if (i < pestleEnd) {
+      // Cylindrical pestle entering diagonally from the upper-left.
+      const t = randomFor(i, 7);
+      const startX = -1.55;
+      const startY = 2.88;
+      const endX = -0.42;
+      const endY = -0.24;
+      const dx = endX - startX;
+      const dy = endY - startY;
+      const length = Math.sqrt(dx * dx + dy * dy);
+      const px = -dy / length;
+      const py = dx / length;
+      const radius = 0.18 + randomFor(i, 8) * 0.18;
+      const side = (randomFor(i, 9) * 2 - 1) * radius;
+      const x = startX + dx * t + px * side;
+      const y = startY + dy * t + py * side;
+      const z = (randomFor(i, 10) - 0.5) * radius * 1.8;
+      setPoint(target, i, x, y, z);
     } else {
-      const t = randomFor(i, 5);
-      const radius = 0.18 + randomFor(i, 6) * 0.25;
-      const a = randomFor(i, 7) * TAU;
-      const x = -1.22 + t * 2.2 + Math.cos(a) * radius;
-      const y = 2.25 - t * 2.55 + Math.sin(a) * radius;
-      const [rx, ry] = rotate(x, y, -0.14);
-      setPoint(target, i, rx, ry, (randomFor(i, 8) - 0.5) * 0.46);
+      // Coffee dust and fragments exploding around the point of impact.
+      const a = randomFor(i, 14) * TAU;
+      const radial = 0.32 + Math.pow(randomFor(i, 15), 0.62) * 1.45;
+      const x = -0.48 + Math.cos(a) * radial * 0.92;
+      const y = -0.12 + Math.sin(a) * radial * 0.62 + randomFor(i, 16) * 0.55;
+      const z = (randomFor(i, 17) - 0.5) * 1.25;
+      setPoint(target, i, x, y, z);
     }
   }
 
@@ -186,7 +215,7 @@ function ParticleField({ progressRef }: ParticleFieldProps) {
   }, []);
 
   const colors = useMemo(() => {
-    const palette = ["#6f3517", "#9b4d20", "#c67635", "#e0a466", "#f0d0a3"];
+    const palette = ["#4d2412", "#713517", "#98451e", "#ba672e", "#d89753", "#e9c08b"];
     const data = new Float32Array(PARTICLE_COUNT * 3);
     const color = new THREE.Color();
 
@@ -220,11 +249,15 @@ function ParticleField({ progressRef }: ParticleFieldProps) {
     }
 
     attribute.needsUpdate = true;
-    points.rotation.y = Math.sin(state.clock.elapsedTime * 0.12) * 0.08 + state.pointer.x * 0.045;
-    points.rotation.x = state.pointer.y * -0.03;
+    points.rotation.y = Math.sin(state.clock.elapsedTime * 0.12) * 0.055 + state.pointer.x * 0.025;
+    points.rotation.x = state.pointer.y * -0.018;
 
-    const targetX = state.size.width <= 900 ? -0.18 : -1.15;
+    const targetX = state.size.width <= 900 ? -0.08 : -2.05;
+    const targetScale = state.size.width <= 900 ? 0.88 : 0.94;
     points.position.x += (targetX - points.position.x) * 0.08;
+    points.scale.x += (targetScale - points.scale.x) * 0.08;
+    points.scale.y += (targetScale - points.scale.y) * 0.08;
+    points.scale.z += (targetScale - points.scale.z) * 0.08;
   });
 
   return (
@@ -234,13 +267,13 @@ function ParticleField({ progressRef }: ParticleFieldProps) {
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.045}
+        size={0.036}
         sizeAttenuation
         transparent
-        opacity={0.94}
+        opacity={0.9}
         vertexColors
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
       />
     </points>
   );
