@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import "./closing-overrides.css";
-import "./location-overrides.css";
-import "./particle-motion-overrides.css";
-import "./mobile-overrides.css";
+import "./redesign.css";
 
 export const metadata: Metadata = {
   title: "Café da Serra | Portal da Serra",
