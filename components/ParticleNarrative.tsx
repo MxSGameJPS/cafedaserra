@@ -4,7 +4,7 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
-const PARTICLE_COUNT = 2600;
+const PARTICLE_COUNT = 7600;
 const TAU = Math.PI * 2;
 
 type ParticleFieldProps = {
@@ -222,6 +222,9 @@ function ParticleField({ progressRef }: ParticleFieldProps) {
     attribute.needsUpdate = true;
     points.rotation.y = Math.sin(state.clock.elapsedTime * 0.12) * 0.08 + state.pointer.x * 0.045;
     points.rotation.x = state.pointer.y * -0.03;
+
+    const targetX = state.size.width <= 900 ? -0.18 : -1.15;
+    points.position.x += (targetX - points.position.x) * 0.08;
   });
 
   return (
