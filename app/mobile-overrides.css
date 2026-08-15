@@ -1,0 +1,467 @@
+/*
+ * Mobile art direction
+ *
+ * The desktop composition is intentionally cinematic and horizontal. On phones
+ * the same rules created collisions between photography, copy and the fixed
+ * WebGL narrative. These overrides treat mobile as its own vertical edit:
+ * visual first, copy second, with a protected lower reading zone.
+ */
+
+@media (max-width: 900px) {
+  html,
+  body {
+    width: 100%;
+    overflow-x: clip;
+  }
+
+  .site-header {
+    padding:
+      max(14px, env(safe-area-inset-top))
+      max(16px, env(safe-area-inset-right))
+      14px
+      max(16px, env(safe-area-inset-left)) !important;
+    align-items: center;
+    background: linear-gradient(to bottom, rgba(5,3,2,.84), rgba(5,3,2,.34) 58%, transparent);
+  }
+
+  .brand {
+    font-size: 9px !important;
+    line-height: .9;
+  }
+
+  .brand strong {
+    font-size: 19px !important;
+  }
+
+  .reserve-button {
+    min-height: 38px;
+    padding: 9px 12px !important;
+    font-size: 8px !important;
+    letter-spacing: .10em !important;
+    white-space: nowrap;
+  }
+
+  .scene {
+    min-height: 108svh;
+    padding: 84px 20px 42px !important;
+    align-items: flex-end !important;
+    overflow: hidden;
+  }
+
+  .scene-inner,
+  .hero .scene-inner,
+  .final-scene .scene-inner {
+    width: 100% !important;
+    min-height: calc(108svh - 126px);
+    margin: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    align-items: end !important;
+  }
+
+  .scene .scene-copy,
+  .scene:nth-child(even) .scene-copy,
+  .hero .scene-copy,
+  .final-scene .scene-copy {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    width: 100% !important;
+    max-width: none !important;
+    padding: 18px 0 20px !important;
+    align-self: end !important;
+    justify-self: stretch !important;
+    position: relative;
+    z-index: 8;
+  }
+
+  .scene-kicker {
+    margin-bottom: 12px !important;
+    font-size: 9px !important;
+    letter-spacing: .17em !important;
+  }
+
+  .scene-title,
+  .hero .scene-title,
+  .final-lockup .scene-title {
+    max-width: 100% !important;
+    font-size: clamp(43px, 13vw, 66px) !important;
+    line-height: .94 !important;
+    letter-spacing: -.04em !important;
+  }
+
+  .scene-title.small {
+    max-width: 100% !important;
+    font-size: clamp(38px, 11.4vw, 58px) !important;
+    line-height: .97 !important;
+  }
+
+  .scene-body {
+    width: 100%;
+    max-width: 34rem !important;
+    margin-top: 16px !important;
+    font-size: 14px !important;
+    line-height: 1.58 !important;
+  }
+
+  .hero {
+    min-height: 103svh;
+  }
+
+  .hero .scene-inner {
+    min-height: calc(103svh - 126px);
+  }
+
+  .hero .scene-copy {
+    padding-bottom: max(6vh, 42px) !important;
+  }
+
+  .hero-tagline {
+    margin-top: 14px !important;
+    font-size: 9px !important;
+    line-height: 1.55;
+    letter-spacing: .14em !important;
+  }
+
+  .scroll-hint {
+    margin-top: 26px !important;
+  }
+
+  /* Keep atmospheric beans behind the actual storytelling on small screens. */
+  .coffee-beans-layer--near {
+    opacity: .10 !important;
+    background-size: 112vw auto !important;
+    background-position: 50% 18vh !important;
+  }
+
+  .coffee-beans-layer--far {
+    display: none !important;
+  }
+
+  .particle-vignette {
+    background: radial-gradient(circle at 50% 40%, transparent 18%, rgba(3,2,1,.18) 55%, rgba(2,1,1,.82) 100%) !important;
+  }
+
+  /* ---------- Location ---------- */
+  #localizacao {
+    min-height: 118svh;
+    padding-top: 72px !important;
+    padding-bottom: 38px !important;
+    isolation: isolate;
+  }
+
+  #localizacao .scene-inner {
+    min-height: calc(118svh - 110px);
+  }
+
+  #localizacao .scene-photo {
+    display: block !important;
+    position: absolute !important;
+    z-index: 1;
+    top: 7.5vh !important;
+    left: -8vw !important;
+    right: -8vw !important;
+    min-height: 48vh !important;
+    opacity: .84 !important;
+  }
+
+  #localizacao .scene-photo--shopping::before {
+    inset: 0 -3vw !important;
+    opacity: .90 !important;
+    background-position: center 52% !important;
+    filter: brightness(.48) sepia(.18) saturate(.84) contrast(1.10) !important;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, rgba(0,0,0,.72) 83%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, rgba(0,0,0,.72) 83%, transparent 100%) !important;
+  }
+
+  #localizacao .scene-photo--shopping::after {
+    inset: 0 -3vw !important;
+    background:
+      linear-gradient(to bottom, rgba(5,3,2,.18), rgba(5,3,2,.02) 46%, rgba(5,3,2,.28) 72%, #050302 100%),
+      radial-gradient(circle at 50% 45%, rgba(184,107,50,.08), transparent 62%) !important;
+  }
+
+  /* The global scene overlay moves to ::after here so ::before can become the map. */
+  #localizacao::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: linear-gradient(to bottom, transparent 0 48%, rgba(5,3,2,.24) 58%, rgba(5,3,2,.88) 76%, #050302 92%);
+  }
+
+  /* Fixed particle-style road map stays locked under the fixed pin while scrolling. */
+  #localizacao::before {
+    content: "";
+    position: fixed;
+    z-index: 3;
+    pointer-events: none;
+    left: 50vw;
+    top: 56vh;
+    width: min(78vw, 430px);
+    height: 16vh;
+    opacity: 0;
+    transform: translate(-50%, -50%) perspective(520px) rotateX(63deg) rotateZ(-7deg) scale(.84);
+    transform-origin: center;
+    transition: opacity .28s ease, transform .38s cubic-bezier(.2,.75,.25,1);
+    background:
+      linear-gradient(8deg, transparent 0 42%, rgba(201,126,57,.68) 42.5% 44%, transparent 44.5% 100%),
+      linear-gradient(-13deg, transparent 0 25%, rgba(169,89,34,.48) 25.5% 27%, transparent 27.5% 100%),
+      linear-gradient(21deg, transparent 0 66%, rgba(222,151,84,.46) 66.5% 68%, transparent 68.5% 100%),
+      linear-gradient(77deg, transparent 0 31%, rgba(181,101,43,.46) 31.5% 33%, transparent 33.5% 100%),
+      linear-gradient(96deg, transparent 0 58%, rgba(224,158,94,.36) 58.5% 60%, transparent 60.5% 100%),
+      radial-gradient(ellipse at 50% 53%, rgba(175,91,34,.16), transparent 68%);
+    -webkit-mask-image:
+      radial-gradient(circle at center, #000 0%, #000 62%, rgba(0,0,0,.68) 76%, transparent 100%),
+      repeating-radial-gradient(circle at 1px 1px, #000 0 1px, transparent 1.25px 5px);
+    mask-image:
+      radial-gradient(circle at center, #000 0%, #000 62%, rgba(0,0,0,.68) 76%, transparent 100%),
+      repeating-radial-gradient(circle at 1px 1px, #000 0 1px, transparent 1.25px 5px);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    clip-path: polygon(5% 18%, 90% 0, 100% 68%, 18% 100%, 0 59%);
+    filter: drop-shadow(0 0 7px rgba(198,111,48,.16));
+  }
+
+  html.location-phase #localizacao::before {
+    opacity: .40;
+    transform: translate(-50%, -50%) perspective(520px) rotateX(63deg) rotateZ(-7deg) scale(1);
+  }
+
+  html.location-phase .particle-canvas {
+    transform: translate3d(0, -9vh, 0) scale(.72) !important;
+    transform-origin: center center;
+  }
+
+  #localizacao .scene-copy {
+    z-index: 6 !important;
+    padding-bottom: 2vh !important;
+  }
+
+  #localizacao .scene-title.small {
+    font-size: clamp(37px, 10.8vw, 54px) !important;
+  }
+
+  #localizacao .location-card {
+    width: 100%;
+    margin-top: 18px !important;
+    padding-top: 14px !important;
+  }
+
+  #localizacao .location-card span {
+    line-height: 1.45;
+  }
+
+  /* ---------- Experience ---------- */
+  .experience-scene {
+    min-height: 118svh;
+    padding-top: 72px !important;
+    padding-bottom: 38px !important;
+  }
+
+  .experience-scene .scene-inner {
+    min-height: calc(118svh - 110px);
+  }
+
+  .experience-scene .scene-photo {
+    display: block !important;
+    position: absolute !important;
+    z-index: 1;
+    top: 6vh !important;
+    left: -8vw !important;
+    right: -8vw !important;
+    min-height: 55vh !important;
+    opacity: .92 !important;
+  }
+
+  .experience-scene .scene-photo--interior::before {
+    inset: 0 -4vw !important;
+    opacity: .92 !important;
+    background-position: center 52% !important;
+    filter: brightness(.44) sepia(.20) saturate(.80) contrast(1.12) !important;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 8%, #000 68%, rgba(0,0,0,.74) 82%, transparent 100%) !important;
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 8%, #000 68%, rgba(0,0,0,.74) 82%, transparent 100%) !important;
+  }
+
+  .experience-scene .scene-photo--interior::after {
+    inset: 0 -4vw !important;
+    background: linear-gradient(to bottom, rgba(5,3,2,.12), rgba(5,3,2,.02) 48%, rgba(5,3,2,.30) 72%, #050302 100%) !important;
+  }
+
+  .experience-scene::before {
+    background: linear-gradient(to bottom, transparent 0 48%, rgba(5,3,2,.24) 58%, rgba(5,3,2,.90) 78%, #050302 94%) !important;
+  }
+
+  .experience-scene .scene-copy {
+    padding-bottom: 3vh !important;
+  }
+
+  .experience-scene .scene-title.small {
+    font-size: clamp(38px, 11vw, 55px) !important;
+  }
+
+  .experience-transition {
+    display: none !important;
+  }
+
+  /* ---------- Closing / Final ---------- */
+  .final-scene {
+    min-height: 124svh !important;
+    padding-top: 72px !important;
+    padding-bottom: max(34px, env(safe-area-inset-bottom)) !important;
+    align-items: flex-end !important;
+  }
+
+  .final-scene .scene-inner {
+    min-height: calc(124svh - 106px);
+  }
+
+  .final-scene .final-lockup {
+    width: 100% !important;
+    padding: 20px 0 0 !important;
+    position: relative;
+    z-index: 12 !important;
+    background: linear-gradient(to top, #050302 0%, rgba(5,3,2,.94) 70%, transparent 100%);
+  }
+
+  .final-actions {
+    width: 100%;
+    margin-top: 20px !important;
+    gap: 8px !important;
+  }
+
+  .action-primary,
+  .action-secondary {
+    flex: 1 1 145px;
+    min-height: 46px !important;
+    padding-inline: 14px !important;
+  }
+
+  html.closing-phase .particle-canvas {
+    opacity: .055 !important;
+  }
+
+  .closing-visual {
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100svh !important;
+  }
+
+  .closing-smoke {
+    left: 50% !important;
+    bottom: 57vh !important;
+    width: 30vw !important;
+    height: 38vh !important;
+    background-size: 520% auto !important;
+    opacity: .72;
+  }
+
+  .closing-beans {
+    left: 50% !important;
+  }
+
+  .closing-beans--a {
+    top: 5vh !important;
+    width: min(32vw, 165px) !important;
+    height: 47vh !important;
+  }
+
+  .closing-beans--b {
+    top: 14vh !important;
+    width: min(18vw, 94px) !important;
+    height: 37vh !important;
+    opacity: .24 !important;
+  }
+
+  .closing-cup {
+    left: 50% !important;
+    bottom: 39vh !important;
+    width: min(70vw, 410px) !important;
+    height: 29vh !important;
+  }
+
+  .closing-visual::after {
+    left: 50% !important;
+    bottom: 40vh !important;
+    width: min(68vw, 390px) !important;
+    height: 15vh !important;
+  }
+
+  .site-footer {
+    padding:
+      24px
+      max(20px, env(safe-area-inset-right))
+      max(32px, env(safe-area-inset-bottom))
+      max(20px, env(safe-area-inset-left)) !important;
+    gap: 10px !important;
+    line-height: 1.5;
+  }
+
+  .modal-backdrop {
+    padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom)) !important;
+    align-items: end;
+  }
+
+  .modal {
+    max-height: 92svh !important;
+    padding: 24px 18px !important;
+    border-radius: 12px 12px 0 0;
+  }
+
+  .modal h2 {
+    font-size: clamp(32px, 10vw, 46px) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    padding-left: max(14px, env(safe-area-inset-left)) !important;
+    padding-right: max(14px, env(safe-area-inset-right)) !important;
+  }
+
+  .reserve-button {
+    padding-inline: 10px !important;
+    letter-spacing: .07em !important;
+  }
+
+  .scene {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+
+  .scene-title,
+  .hero .scene-title,
+  .final-lockup .scene-title {
+    font-size: clamp(40px, 13vw, 58px) !important;
+  }
+
+  .scene-title.small,
+  #localizacao .scene-title.small,
+  .experience-scene .scene-title.small {
+    font-size: clamp(36px, 11vw, 50px) !important;
+  }
+
+  .scene-body {
+    font-size: 13.5px !important;
+  }
+
+  html.location-phase .particle-canvas {
+    transform: translate3d(0, -10vh, 0) scale(.66) !important;
+  }
+
+  #localizacao::before {
+    top: 55vh;
+    width: 82vw;
+    height: 14vh;
+  }
+
+  .closing-cup {
+    width: min(76vw, 360px) !important;
+    bottom: 40vh !important;
+  }
+
+  .closing-smoke {
+    bottom: 58vh !important;
+    width: 34vw !important;
+  }
+}
