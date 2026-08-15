@@ -108,7 +108,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  width: min(1040px, 84vw);
+  width: min(1120px, 90vw);
+  padding: clamp(38px, 4.8vw, 70px) clamp(30px, 5vw, 72px);
+  box-sizing: border-box;
   text-align: center;
   transform: translate3d(-50%, -50%, 0);
   opacity: 0;
@@ -116,7 +118,13 @@
   pointer-events: none;
   transition: opacity .16s ease;
   contain: layout paint style;
-  text-shadow: 0 4px 28px rgba(0,0,0,.68);
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0,0,0,.62) 0%,
+    rgba(0,0,0,.46) 34%,
+    rgba(0,0,0,.20) 58%,
+    rgba(0,0,0,0) 80%
+  );
 }
 
 .video-copy.is-active {
@@ -127,25 +135,30 @@
 
 .video-copy__eyebrow {
   margin: 0 0 22px;
-  color: #d7955d;
+  color: #e4a16a;
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: .24em;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .22em;
   text-transform: uppercase;
+  text-shadow:
+    0 1px 4px rgba(0,0,0,.95),
+    0 3px 14px rgba(0,0,0,.82);
 }
 
 .video-copy__title {
   margin: 0 auto;
   max-width: 1000px;
-  color: #f5e9dc;
+  color: #f8eee4;
   font-family: Georgia, "Times New Roman", serif;
   font-size: clamp(64px, 7.4vw, 124px);
   font-weight: 400;
   line-height: .91;
   letter-spacing: -.045em;
   text-wrap: balance;
-  text-shadow: 0 4px 28px rgba(0,0,0,.72);
+  text-shadow:
+    0 2px 8px rgba(0,0,0,.96),
+    0 5px 28px rgba(0,0,0,.76);
 }
 
 .video-copy--hero .video-copy__title {
@@ -160,14 +173,18 @@
 
 .video-copy__body {
   margin: 28px auto 0;
-  max-width: 660px;
-  color: rgba(244,231,217,.82);
+  max-width: 700px;
+  color: rgba(255,248,240,.96);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  font-size: clamp(14px, 1.08vw, 18px);
-  font-weight: 300;
-  line-height: 1.62;
-  letter-spacing: -.012em;
+  font-size: clamp(16px, 1.12vw, 19px);
+  font-weight: 400;
+  line-height: 1.58;
+  letter-spacing: -.008em;
   text-wrap: balance;
+  text-shadow:
+    0 1px 4px rgba(0,0,0,1),
+    0 3px 12px rgba(0,0,0,.92),
+    0 8px 26px rgba(0,0,0,.70);
 }
 
 .video-copy__actions {
@@ -200,8 +217,9 @@
 
 .video-copy__actions a {
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(243,229,212,.42);
-  color: #efe0cd;
+  border-bottom: 1px solid rgba(243,229,212,.58);
+  color: #fff3e6;
+  text-shadow: 0 2px 8px rgba(0,0,0,.88);
 }
 
 .video-scroll-cue {
@@ -278,15 +296,23 @@
   }
 
   .video-copy {
-    width: calc(100vw - 40px);
+    width: calc(100vw - 18px);
+    padding: 42px 24px 46px;
     transition: none;
-    text-shadow: 0 3px 18px rgba(0,0,0,.62);
+    background: radial-gradient(
+      ellipse at center,
+      rgba(0,0,0,.72) 0%,
+      rgba(0,0,0,.54) 36%,
+      rgba(0,0,0,.25) 62%,
+      rgba(0,0,0,0) 84%
+    );
   }
 
   .video-copy__eyebrow {
     margin-bottom: 16px;
-    font-size: 9px;
-    letter-spacing: .22em;
+    font-size: 10px;
+    font-weight: 750;
+    letter-spacing: .20em;
   }
 
   .video-copy__title,
@@ -295,14 +321,22 @@
     max-width: 100%;
     font-size: clamp(46px, 13.2vw, 70px);
     line-height: .92;
-    text-shadow: 0 3px 18px rgba(0,0,0,.66);
+    text-shadow:
+      0 2px 7px rgba(0,0,0,1),
+      0 5px 20px rgba(0,0,0,.82);
   }
 
   .video-copy__body {
-    max-width: min(540px, 88vw);
-    margin-top: 20px;
-    font-size: 14px;
-    line-height: 1.52;
+    max-width: min(560px, 90vw);
+    margin-top: 21px;
+    font-size: 15px;
+    font-weight: 450;
+    line-height: 1.55;
+    color: #fff8f1;
+    text-shadow:
+      0 1px 4px rgba(0,0,0,1),
+      0 3px 10px rgba(0,0,0,.98),
+      0 7px 22px rgba(0,0,0,.76);
   }
 
   .video-copy__actions {
@@ -319,6 +353,10 @@
 }
 
 @media (max-width: 560px) {
+  .video-copy {
+    padding-inline: 18px;
+  }
+
   .video-copy__title,
   .video-copy--hero .video-copy__title,
   .video-copy--final .video-copy__title {
@@ -326,8 +364,9 @@
   }
 
   .video-copy__body {
-    max-width: 92%;
-    font-size: 13px;
+    max-width: 94%;
+    font-size: 15px;
+    line-height: 1.52;
   }
 
   .video-copy__actions {
