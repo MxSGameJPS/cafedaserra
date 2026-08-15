@@ -1,9 +1,10 @@
-/* Café da Serra — clean video-first experience */
+/* Café da Serra — video-first editorial experience */
 
 .video-experience {
   position: relative;
   min-height: 950svh;
   background: #000;
+  color: #f3e5d4;
   overflow: clip;
 }
 
@@ -24,6 +25,191 @@
 
 .video-experience.is-ready .video-experience__film {
   opacity: 1;
+}
+
+.video-experience__shade {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 48%, transparent 0 37%, rgba(0,0,0,.08) 63%, rgba(0,0,0,.46) 100%),
+    linear-gradient(180deg, rgba(0,0,0,.22), transparent 22%, transparent 76%, rgba(0,0,0,.24));
+}
+
+.video-brand {
+  position: fixed;
+  z-index: 20;
+  top: 30px;
+  left: 4vw;
+  display: flex;
+  flex-direction: column;
+  color: #efe0cd;
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: .82;
+  text-decoration: none;
+  text-shadow: 0 2px 16px rgba(0,0,0,.58);
+}
+
+.video-brand span {
+  font-size: 11px;
+  letter-spacing: .10em;
+  text-transform: uppercase;
+}
+
+.video-brand strong {
+  font-size: 27px;
+  font-weight: 400;
+  letter-spacing: -.025em;
+  text-transform: uppercase;
+}
+
+.video-copy-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.video-copy {
+  position: absolute;
+  top: 50%;
+  width: min(560px, 38vw);
+  transform: translateY(-50%);
+  will-change: opacity, transform;
+  transition: opacity .08s linear;
+  text-shadow: 0 3px 26px rgba(0,0,0,.72);
+}
+
+.video-copy--left {
+  left: clamp(64px, 7.5vw, 148px);
+  text-align: left;
+}
+
+.video-copy--right {
+  right: clamp(64px, 7.5vw, 148px);
+  text-align: left;
+}
+
+.video-copy--center {
+  left: 50%;
+  width: min(760px, 74vw);
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.video-copy__index {
+  margin-bottom: 22px;
+  color: #d48a4b;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  letter-spacing: .12em;
+}
+
+.video-copy__eyebrow {
+  margin: 0 0 18px;
+  color: #d79a65;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.video-copy__title {
+  margin: 0;
+  max-width: 720px;
+  color: #f4e7d7;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(48px, 5.2vw, 86px);
+  font-weight: 400;
+  line-height: .96;
+  letter-spacing: -.045em;
+  text-wrap: balance;
+}
+
+.video-copy--center .video-copy__title,
+.video-copy--center .video-copy__body {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.video-copy__body {
+  margin: 24px 0 0;
+  max-width: 480px;
+  color: rgba(241,226,211,.77);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: clamp(14px, 1.05vw, 17px);
+  font-weight: 300;
+  line-height: 1.65;
+  letter-spacing: -.01em;
+}
+
+.video-copy__actions {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 22px;
+  pointer-events: auto;
+}
+
+.video-copy__actions button,
+.video-copy__actions a {
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.video-copy__actions button {
+  min-height: 46px;
+  padding: 0 22px;
+  border: 1px solid #d18a50;
+  border-radius: 999px;
+  background: #c97b3d;
+  color: #160c07;
+  cursor: pointer;
+  transition: transform .25s ease, background .25s ease;
+}
+
+.video-copy__actions button:hover {
+  background: #df9256;
+  transform: translateY(-2px);
+}
+
+.video-copy__actions a {
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(243,229,212,.42);
+  color: #efe0cd;
+}
+
+.video-scroll-cue {
+  position: fixed;
+  z-index: 12;
+  left: 50%;
+  bottom: 34px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: rgba(242,226,210,.58);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  transform: translateX(-50%);
+  transition: opacity .2s linear;
+  pointer-events: none;
+}
+
+.video-scroll-cue span {
+  display: block;
+  width: 42px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #d8945d);
 }
 
 .video-experience__track {
@@ -54,6 +240,86 @@
   .video-experience__film {
     height: 100dvh;
     object-position: center center;
+  }
+
+  .video-experience__shade {
+    background:
+      linear-gradient(180deg, rgba(0,0,0,.14) 0%, transparent 28%, rgba(0,0,0,.05) 54%, rgba(0,0,0,.72) 100%);
+  }
+
+  .video-brand {
+    top: max(20px, env(safe-area-inset-top));
+    left: 20px;
+  }
+
+  .video-brand strong {
+    font-size: 23px;
+  }
+
+  .video-copy,
+  .video-copy--left,
+  .video-copy--right,
+  .video-copy--center {
+    top: auto;
+    right: 20px;
+    bottom: max(62px, calc(env(safe-area-inset-bottom) + 42px));
+    left: 20px;
+    width: auto;
+    max-width: none;
+    text-align: left;
+    transform: none;
+  }
+
+  .video-copy__index {
+    margin-bottom: 12px;
+    font-size: 11px;
+  }
+
+  .video-copy__eyebrow {
+    margin-bottom: 10px;
+    font-size: 9px;
+  }
+
+  .video-copy__title {
+    max-width: 92%;
+    font-size: clamp(42px, 12vw, 62px);
+    line-height: .92;
+  }
+
+  .video-copy__body,
+  .video-copy--center .video-copy__body {
+    max-width: 88%;
+    margin: 16px 0 0;
+    font-size: 14px;
+    line-height: 1.52;
+  }
+
+  .video-copy__actions {
+    justify-content: flex-start;
+    margin-top: 22px;
+    gap: 16px;
+  }
+
+  .video-scroll-cue {
+    right: 20px;
+    bottom: 20px;
+    left: auto;
+    transform: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .video-copy__title {
+    font-size: clamp(38px, 11.5vw, 52px);
+  }
+
+  .video-copy__body {
+    font-size: 13px;
+  }
+
+  .video-copy__actions {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
