@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import ParticleNarrative from "@/components/ParticleNarrative";
+import ExperienceParticleBackdrop from "@/components/ExperienceParticleBackdrop";
 import ReservationModal from "@/components/ReservationModal";
 
 const scenes = ["Início", "Quem somos", "Onde estamos", "Experiência", "Final"];
@@ -26,6 +27,7 @@ export default function HomePage() {
   return (
     <main className="site-shell">
       <ParticleNarrative />
+      <ExperienceParticleBackdrop />
       <div className="particle-vignette" aria-hidden="true" />
 
       <header className="site-header">
@@ -107,7 +109,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="scene scene--copy-right" id="experiencia">
+        <section className="scene scene--copy-right experience-scene" id="experiencia">
           <div className="scene-inner">
             <div className="scene-visual" aria-hidden="true">
               <div className="scene-media scene-media--interior" />
